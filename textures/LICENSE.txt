@@ -1,0 +1,11 @@
+16 px textures based on Castle mod
+original textures by Philipner
+
+License Textures: Napiophelios  - CC-BY-SA 3.0
+
+-castle_door_jail.png
+-castle_door_oak.png
+-castle_jail_door_inv.png
+-castle_jailbars.png
+-castle_oak_door_inv.png
+-castle_steel.png
