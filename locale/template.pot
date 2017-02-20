@@ -1,0 +1,65 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-02-20 15:03-0700\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: doors.lua:8
+msgid "Oak Door"
+msgstr ""
+
+#: doors.lua:22
+msgid "Jail Door"
+msgstr ""
+
+#: doors.lua:41
+msgid "Jail Bars"
+msgstr ""
+
+#: gate_slots.lua:36
+msgid "Stonebrick"
+msgstr ""
+
+#: gate_slots.lua:45
+msgid "@1 Gate Slot"
+msgstr ""
+
+#: gate_slots.lua:68
+msgid "@1 Gate Slot Reverse"
+msgstr ""
+
+#: gates.lua:7
+msgid "Portcullis Bars"
+msgstr ""
+
+#: gates.lua:35
+msgid "Portcullis Bottom"
+msgstr ""
+
+#: gates.lua:100
+msgid "Gate Door"
+msgstr ""
+
+#: gates.lua:130
+msgid "Gate Door Edge"
+msgstr ""
+
+#: gates.lua:167
+msgid "Gate Door With Handle"
+msgstr ""
+
+#: gates.lua:208
+msgid "Gate Door With Hinge"
+msgstr ""
