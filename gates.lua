@@ -168,7 +168,7 @@ minetest.register_node("castle_gates:gate_edge_handle", {
 	groups = {choppy = 1, castle_gate = 1},
 	tiles = {
 		"castle_steel.png^(default_wood.png^[mask:castle_door_side_mask.png^[transformR90)",
-		"castle_steel.png^(default_wood.png^[mask:castle_door_side_mask.png^[transformR90)",
+		"castle_steel.png^(default_wood.png^[mask:castle_door_side_mask.png^[transformR270)",
 		"castle_steel.png^(default_wood.png^[transformR90^[mask:castle_door_side_mask.png)",
 		"castle_steel.png^(default_wood.png^[transformR90^[mask:(castle_door_side_mask.png^[transformFX))",
 		"default_wood.png^[transformR90^(default_coal_block.png^[mask:castle_door_edge_mask.png^[transformFX)^(castle_steel.png^[mask:castle_door_handle_mask.png^[transformFX)",
