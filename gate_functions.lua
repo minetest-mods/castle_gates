@@ -41,10 +41,12 @@ local interpret_hinge = function(hinge_def, pos, node_dirs)
 		placement = vector.add(pos, node_dirs[hinge_def.offset])
 	elseif type(hinge_def.offset) == "table" then
 		placement = vector.new(0,0,0)
+		local divisor = 0
 		for _, val in pairs(hinge_def.offset) do
 			placement = vector.add(placement, node_dirs[val])
+			divisor = divisor + 1
 		end
-		placement = vector.add(pos, vector.normalize(placement))
+		placement = vector.add(pos, vector.divide(placement, divisor))
 	else
 		placement = pos
 	end
@@ -97,12 +99,17 @@ local rotate_pos = function(axis, direction, pos)
 		end
 	end
 end
+
 local rotate_pos_displaced = function(pos, origin, axis, direction)
 	-- position in space relative to origin
 	local newpos = vector.subtract(pos, origin)
 	newpos = rotate_pos(axis, direction, newpos)
 	-- Move back to original reference frame
 	return vector.add(newpos, origin)
+end
+
+local get_buildable_to = function(pos)
+	return minetest.registered_nodes[minetest.get_node(pos).name].buildable_to
 end
 
 
@@ -213,9 +220,12 @@ local get_door_layout = function(pos, facedir, player)
 			door.can_slide.right = door.can_slide.right and can_slide_to:get_pos(vector.add(door_node.pos, door.directions.right))
 		end
 	else
-		--rotating door, evaluate which direction it can go
+		--rotating door, evaluate which direction it can go. Slightly more complicated.
 		local origin = door.hinge.placement
 		local axis = door.hinge.axis
+		local backfront = dir_to_axis(door.directions.back)
+		local leftright = dir_to_axis(door.directions.right)
+
 		door.swings = {}
 
 		for _, direction in pairs({-1, 1}) do 
@@ -226,12 +236,42 @@ local get_door_layout = function(pos, facedir, player)
 					local newpos = rotate_pos_displaced(door_node.pos, origin, axis, direction)
 					local newnode = minetest.get_node(newpos)
 					local newdef = minetest.registered_nodes[newnode.name]
-					if not newdef.buildable_to then
+					if not newdef.buildable_to then -- check if the destination node is free.
 						door.swings[direction] = false
 						break
 					end
-					-- TODO: tast swing-through volume here
+					
+					local swing_corner = {} -- the corner of the square "arc" that a Minetest gate swings through
+					local scan_dir
+					swing_corner[axis] = door_node.pos[axis]
+					swing_corner[backfront] = newpos[backfront]
+					swing_corner[leftright] = door_node.pos[leftright]
+					if not (vector.equals(newpos, swing_corner) or vector.equals(door_node.pos, swing_corner)) then -- we're right next to the hinge, no need for further testing
+						scan_dir = vector.direction(newpos, swing_corner) -- get the direction from the new door position toward the swing corner
+						repeat
+							newpos = vector.add(newpos, scan_dir) -- we start with newpos on the destination node, which has already been tested.
+							if not get_buildable_to(newpos) then
+								door.swings[direction] = false
+							end
+						until vector.equals(newpos, swing_corner) or door.swings[direction] == false
+
+						if not (vector.equals(newpos, door_node.pos) or door.swings[direction] == false) then
+							scan_dir = vector.direction(newpos, door_node.pos)
+							newpos = vector.add(newpos, scan_dir) -- the first step here is a freebie since we've already checked swing_corner
+							while not (vector.equals(newpos, door_node.pos) or door.swings[direction] == false) do
+								if not get_buildable_to(newpos) then
+									door.swings[direction] = false
+								end
+								newpos = vector.add(newpos, scan_dir)
+							end
+						end
+					end
 				end
+				
+				if door.swings[direction] == false then
+					break
+				end
+				
 			end
 		end	
 	end
