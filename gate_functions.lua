@@ -23,16 +23,18 @@ local get_dirs = function(facedir)
 	return dirs
 end
 
-local interpret_hinge = function(hinge_def, pos, node_dirs)
-	local axis_dir = node_dirs[hinge_def.axis]
-	local axis
-	if axis_dir.x ~= 0 then
-		axis = "x"
-	elseif axis_dir.y ~= 0 then
-		axis = "y"
+local dir_to_axis = function(dir)
+	if dir.x ~= 0 then
+		return "x"
+	elseif dir.y ~= 0 then
+		return "y"
 	else
-		axis = "z"
+		return "z"
 	end
+end
+
+local interpret_hinge = function(hinge_def, pos, node_dirs)
+	local axis = dir_to_axis(node_dirs[hinge_def.axis]) 
 	
 	local placement
 	if type(hinge_def.offset) == "string" then
@@ -49,6 +51,60 @@ local interpret_hinge = function(hinge_def, pos, node_dirs)
 
 	return axis, placement
 end
+
+
+--------------------------------------------------------------------------
+-- Rotation (slightly more complex than sliding)
+
+local facedir_rotate = {
+	['x'] = {
+		[-1] = {[0]=4, 5, 6, 7, 22, 23, 20, 21, 0, 1, 2, 3, 13, 14, 15, 12, 19, 16, 17, 18, 10, 11, 8, 9}, -- 270 degrees
+		[1] = {[0]=8, 9, 10, 11, 0, 1, 2, 3, 22, 23, 20, 21, 15, 12, 13, 14, 17, 18, 19, 16, 6, 7, 4, 5}, -- 90 degrees
+	},
+	['y'] = {
+		[-1] = {[0]=3, 0, 1, 2, 19, 16, 17, 18, 15, 12, 13, 14, 7, 4, 5, 6, 11, 8, 9, 10, 21, 22, 23, 20}, -- 270 degrees
+		[1] = {[0]=1, 2, 3, 0, 13, 14, 15, 12, 17, 18, 19, 16, 9, 10, 11, 8, 5, 6, 7, 4, 23, 20, 21, 22}, -- 90 degrees
+	},
+	['z'] = {
+		[-1] = {[0]=16, 17, 18, 19, 5, 6, 7, 4, 11, 8, 9, 10, 0, 1, 2, 3, 20, 21, 22, 23, 12, 13, 14, 15}, -- 270 degrees
+		[1] = {[0]=12, 13, 14, 15, 7, 4, 5, 6, 9, 10, 11, 8, 20, 21, 22, 23, 0, 1, 2, 3, 16, 17, 18, 19}, -- 90 degrees
+	}
+}
+	--90 degrees CW about x-axis: (x, y, z) -> (x, -z, y)
+	--90 degrees CCW about x-axis: (x, y, z) -> (x, z, -y)
+	--90 degrees CW about y-axis: (x, y, z) -> (-z, y, x)
+	--90 degrees CCW about y-axis: (x, y, z) -> (z, y, -x)
+	--90 degrees CW about z-axis: (x, y, z) -> (y, -x, z)
+	--90 degrees CCW about z-axis: (x, y, z) -> (-y, x, z)
+local rotate_pos = function(axis, direction, pos)
+	if axis == "x" then
+		if direction < 0 then
+			return {x= pos.x, y= -pos.z, z= pos.y}
+		else
+			return {x= pos.x, y= pos.z, z= -pos.y}
+		end
+	elseif axis == "y" then
+		if direction < 0 then
+			return {x= -pos.z, y= pos.y, z= pos.x}
+		else
+			return {x= pos.z, y= pos.y, z= -pos.x}
+		end
+	else	
+		if direction < 0 then
+			return {x= -pos.y, y= pos.x, z= pos.z}
+		else
+			return {x= pos.y, y= -pos.x, z= pos.z}
+		end
+	end
+end
+local rotate_pos_displaced = function(pos, origin, axis, direction)
+	-- position in space relative to origin
+	local newpos = vector.subtract(pos, origin)
+	newpos = rotate_pos(axis, direction, newpos)
+	-- Move back to original reference frame
+	return vector.add(newpos, origin)
+end
+
 
 local get_door_layout = function(pos, facedir, player)
 	-- This method does a flood-fill looking for all nodes that meet the following criteria:
@@ -156,13 +212,32 @@ local get_door_layout = function(pos, facedir, player)
 			door.can_slide.left = door.can_slide.left and can_slide_to:get_pos(vector.add(door_node.pos, door.directions.left))
 			door.can_slide.right = door.can_slide.right and can_slide_to:get_pos(vector.add(door_node.pos, door.directions.right))
 		end
+	else
+		--rotating door, evaluate which direction it can go
+		local origin = door.hinge.placement
+		local axis = door.hinge.axis
+		door.swings = {}
+
+		for _, direction in pairs({-1, 1}) do 
+			door.swings[direction] = true
+			for _, door_node in pairs(door.all) do
+				origin[axis] = door_node.pos[axis]
+				if not vector.equals(door_node.pos, origin) then -- There's no obstruction if the node is literally located along the rotation axis
+					local newpos = rotate_pos_displaced(door_node.pos, origin, axis, direction)
+					local newnode = minetest.get_node(newpos)
+					local newdef = minetest.registered_nodes[newnode.name]
+					if not newdef.buildable_to then
+						door.swings[direction] = false
+						break
+					end
+					-- TODO: tast swing-through volume here
+				end
+			end
+		end	
 	end
-	
 	return door
 end
 
---------------------------------------------------------------------------
--- Sliding
 
 local slide_gate = function(door, direction)
 	for _, door_node in pairs(door.all) do
@@ -171,74 +246,13 @@ local slide_gate = function(door, direction)
 	door.previous_move = direction
 end
 
---------------------------------------------------------------------------
--- Rotation (slightly more complex than sliding)
-
-local facedir_rotate = {
-	['x'] = {
-		[-1] = {[0]=4, 5, 6, 7, 22, 23, 20, 21, 0, 1, 2, 3, 13, 14, 15, 12, 19, 16, 17, 18, 10, 11, 8, 9}, -- 270 degrees
-		[1] = {[0]=8, 9, 10, 11, 0, 1, 2, 3, 22, 23, 20, 21, 15, 12, 13, 14, 17, 18, 19, 16, 6, 7, 4, 5}, -- 90 degrees
-	},
-	['y'] = {
-		[-1] = {[0]=3, 0, 1, 2, 19, 16, 17, 18, 15, 12, 13, 14, 7, 4, 5, 6, 11, 8, 9, 10, 21, 22, 23, 20}, -- 270 degrees
-		[1] = {[0]=1, 2, 3, 0, 13, 14, 15, 12, 17, 18, 19, 16, 9, 10, 11, 8, 5, 6, 7, 4, 23, 20, 21, 22}, -- 90 degrees
-	},
-	['z'] = {
-		[-1] = {[0]=16, 17, 18, 19, 5, 6, 7, 4, 11, 8, 9, 10, 0, 1, 2, 3, 20, 21, 22, 23, 12, 13, 14, 15}, -- 270 degrees
-		[1] = {[0]=12, 13, 14, 15, 7, 4, 5, 6, 9, 10, 11, 8, 20, 21, 22, 23, 0, 1, 2, 3, 16, 17, 18, 19}, -- 90 degrees
-	}
-}
-	--90 degrees CW about x-axis: (x, y, z) -> (x, -z, y)
-	--90 degrees CCW about x-axis: (x, y, z) -> (x, z, -y)
-	--90 degrees CW about y-axis: (x, y, z) -> (-z, y, x)
-	--90 degrees CCW about y-axis: (x, y, z) -> (z, y, -x)
-	--90 degrees CW about z-axis: (x, y, z) -> (y, -x, z)
-	--90 degrees CCW about z-axis: (x, y, z) -> (-y, x, z)
-local rotate_pos = function(axis, direction, pos)
-	if axis == "x" then
-		if direction < 0 then
-			return {x= pos.x, y= -pos.z, z= pos.y}
-		else
-			return {x= pos.x, y= pos.z, z= -pos.y}
-		end
-	elseif axis == "y" then
-		if direction < 0 then
-			return {x= -pos.z, y= pos.y, z= pos.x}
-		else
-			return {x= pos.z, y= pos.y, z= -pos.x}
-		end
-	else	
-		if direction < 0 then
-			return {x= -pos.y, y= pos.x, z= pos.z}
-		else
-			return {x= pos.y, y= -pos.x, z= pos.z}
-		end
-	end
-end
-local rotate_pos_displaced = function(pos, origin, axis, direction)
-	-- position in space relative to origin
-	local newpos = vector.subtract(pos, origin)
-	newpos = rotate_pos(axis, direction, newpos)
-	-- Move back to original reference frame
-	return vector.add(newpos, origin)
-end
-
--- TODO: this doesn't yet test for obstructions during the swing (since it "teleports" the gate into its new orientation) which makes common drawbridge designs misbehave.
 local rotate_door = function (door, direction)
+	if not door.swings[direction] then
+		return false
+	end
+
 	local origin = door.hinge.placement
 	local axis = door.hinge.axis
-	
-	for _, door_node in pairs(door.all) do
-		origin[axis] = door_node.pos[axis]
-		if not vector.equals(door_node.pos, origin) then -- There's no obstruction if the node is literally located along the rotation axis
-			local newpos = rotate_pos_displaced(door_node.pos, origin, axis, direction)
-			local newnode = minetest.get_node(newpos)
-			local newdef = minetest.registered_nodes[newnode.name]
-			if not newdef.buildable_to then
-				return false
-			end
-		end
-	end
 	
 	for _, door_node in pairs(door.all) do
 		door_node.pos = rotate_pos_displaced(door_node.pos, origin, axis, direction)
@@ -246,6 +260,7 @@ local rotate_door = function (door, direction)
 	end
 	return true
 end
+
 
 ----------------------------------------------------------------------------------------------------
 -- When creating new gate pieces use this as the "on_rightclick" method of their node definitions
@@ -297,14 +312,14 @@ castle_gates.trigger_gate = function(pos, node, player)
 				end
 			end
 		elseif door.hinge ~= nil then -- this is a hinged door
-			if door.previous_move == "deosil" or door.previous_move == "clockwise" then
+			if door.previous_move == "deosil" then
 				door_moved = rotate_door(door, 1)
-			elseif door.previous_move == "widdershins" or door.previous_move == "counterclockwise" then
+			elseif door.previous_move == "widdershins" then
 				door_moved = rotate_door(door, -1)
 			end				
 			
 			if not door_moved then
-				if door.previous_move == "deosil" or door.previous_move == "clockwise" then
+				if door.previous_move == "deosil" then
 					door.previous_move = "widdershins"
 				else
 					door.previous_move = "deosil"
