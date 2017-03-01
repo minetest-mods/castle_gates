@@ -32,8 +32,10 @@ if minetest.get_modpath("doors") then
 		}
 	})
 	
-	minetest.register_alias("castle:oak_door", "castle_gates:oak_door")
-	minetest.register_alias("castle:jail_door", "castle_gates:jail_door")
+	minetest.register_alias("castle:oak_door_a", "castle_gates:oak_door_a")
+	minetest.register_alias("castle:oak_door_b", "castle_gates:oak_door_b")
+	minetest.register_alias("castle:jail_door_a", "castle_gates:jail_door_a")
+	minetest.register_alias("castle:jail_door_b", "castle_gates:jail_door_b")
 end
 
 if minetest.get_modpath("xpanes") then
