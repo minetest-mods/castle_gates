@@ -5,6 +5,8 @@ local S, NS = dofile(MP.."/intllib.lua")
 minetest.register_node("castle_gates:portcullis_bars", {
 	drawtype = "nodebox",
 	description = S("Portcullis Bars"),
+	_doc_items_longdesc = castle_gates.doc.portcullis_bars_longdesc,
+	_doc_items_usagehelp = castle_gates.doc.portcullis_bars_usagehelp,
 	groups = {castle_gate = 1, choppy = 1, flow_through = 1},
 	tiles = {
 		"castle_steel.png^(default_wood.png^[transformR90^[mask:castle_portcullis_mask.png)",
@@ -33,6 +35,8 @@ minetest.register_node("castle_gates:portcullis_bars", {
 minetest.register_node("castle_gates:portcullis_bars_bottom", {
 	drawtype = "nodebox",
 	description = S("Portcullis Bottom"),
+	_doc_items_longdesc = castle_gates.doc.portcullis_bars_bottom_longdesc,
+	_doc_items_usagehelp = castle_gates.doc.portcullis_bars_bottom_usagehelp,
 	groups = {castle_gate = 1, choppy = 1, flow_through = 1},
 	tiles = {
 		"castle_steel.png^(default_wood.png^[transformR90^[mask:castle_portcullis_mask.png)",
@@ -98,6 +102,8 @@ minetest.register_craft({
 minetest.register_node("castle_gates:gate_panel", {
 	drawtype = "nodebox",
 	description = S("Gate Door"),
+	_doc_items_longdesc = castle_gates.doc.gate_panel_longdesc,
+	_doc_items_usagehelp = castle_gates.doc.gate_panel_usagehelp,
 	groups = {choppy = 1, castle_gate = 1},
 	tiles = {
 		"default_wood.png^[transformR90",
@@ -128,6 +134,8 @@ minetest.register_craft({
 minetest.register_node("castle_gates:gate_edge", {
 	drawtype = "nodebox",
 	description = S("Gate Door Edge"),
+	_doc_items_longdesc = castle_gates.doc.gate_edge_longdesc,
+	_doc_items_usagehelp = castle_gates.doc.gate_edge_usagehelp,
 	groups = {choppy = 1, castle_gate = 1},
 	tiles = {
 		"default_wood.png^[transformR90",
@@ -165,6 +173,8 @@ minetest.register_craft({
 minetest.register_node("castle_gates:gate_edge_handle", {
 	drawtype = "nodebox",
 	description = S("Gate Door With Handle"),
+	_doc_items_longdesc = castle_gates.doc.gate_edge_handle_longdesc,
+	_doc_items_usagehelp = castle_gates.doc.gate_edge_handle_usagehelp,
 	groups = {choppy = 1, castle_gate = 1},
 	tiles = {
 		"castle_steel.png^(default_wood.png^[mask:castle_door_side_mask.png^[transformR90)",
@@ -206,6 +216,8 @@ minetest.register_craft({
 minetest.register_node("castle_gates:gate_hinge", {
 	drawtype = "nodebox",
 	description = S("Gate Door With Hinge"),
+	_doc_items_longdesc = castle_gates.doc.gate_hinge_longdesc,
+	_doc_items_usagehelp = castle_gates.doc.gate_hinge_usagehelp,
 	groups = {choppy = 1, castle_gate = 1},
 	tiles = {
 		"default_wood.png^[transformR90",

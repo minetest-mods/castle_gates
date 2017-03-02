@@ -1,0 +1,76 @@
+This document is intended primarily for modders interested in adding their own gate nodes and gate types.
+
+This mod allows for additional gate nodes to be defined in other dependent mods that will work seamlessly with existing gate nodes. The following is a minimalist example that shows a node using all of the features offered by this mod's gate API:
+
+minetest.register_node("castle_gates:example_gate_piece", {
+	description = "Example gate",
+	groups = {castle_gate = 1},
+	tiles = {"default_wood.png"},
+	paramtype2 = "facedir",
+	on_rightclick = castle_gates.trigger_gate,
+	_gate_edges = {"right"=true},
+	_gate_hinge = {axis="top", offset={"front","left"}},
+})
+
+The key features are:
+
+* paramtype2 = "facedir" (mandatory)
+* "castle_gate" group membership (mandatory)
+* on_rightclick = castle_gates.trigger_gate (optional, but recommended)
+* _gate_edges = <edge definition> (optional)
+* _gate_hinge = <hinge defintion> (optional)
+
+
+Paramtype2
+==========
+
+All gate pieces must be orientable via facedir.
+
+Castle_gate group
+=================
+
+When a gate is triggered by right-clicking on a gate node, the gate code does a "flood fill" operation to find all connected gate nodes. This flood fill operation looks for adjacent nodes that belong to the same castle_gate group, so all gate nodes need to belong to this group.
+
+Gates defined in this mod all belong to castle_gate=1.
+
+on_rightclick
+=============
+
+The castle_gates.trigger_gate method is a right-click handler that will trigger the movement of the gate. If you want your gate pieces to respond to a player's right click by opening, use this call to make the gate magic happen.
+
+Note that if you wish you can embed the call to The castle_gates.trigger_gate inside your own on_rightclick function, so that for example you could make a "locked" gate that will only respond to specific players (you may wish to use a different castle_gate group ID for such a gate). Or you can omit this function, in which case the gate piece will still move with the rest of the gate but right-clicking on it will not trigger the gate's movement.
+
+_gate_edges
+===========
+
+This is an optional property you can put on a gate node's definition to prevent flood-fill from extending beyond this node in a particular direction. This is useful if, for example, you want players to be able to build double doors that would otherwise connect together when both doors are closed.
+
+It consists of a table with directions defined as edges set to true. You can use this template:
+
+_gate_edges = {right=false, left=false, top=false, bottom=false}
+
+("front" and "back" are also possible but are unlikely to be of any real use)
+
+Note that the flood-fill search for gate nodes will flow *around* an edge piece if a path exists, the mere fact that there's an edge piece does not guarantee that the door node beyond the edge will not be considered part of the same door as it.
+
+_gate_hinge
+===========
+
+The hinge definition for a node def is of the following form:
+
+_gate_hinge = {axis=<axis>, offset=<offset>}
+
+<axis> is one of "top", "bottom", "left", "right", "front" or "back".
+Top/bottom, left/right and front/back are interchangeable pairings as far as this code is concerned.
+These directions are relative to the orientation of the block. Existing gates use "top", so for
+maximum compatibility it's advised that new gate hinges are defined with the same axis.
+
+<offset> is optional. If it is not defined, the gate hinge will try to rotate around the center of the node.
+
+<offset> can be a single direction ("top", "bottom", "left", "right", "front", "back"). If a single direction is
+given the hinge will try to rotate around the center of the node that lies in that direction relative to the hinge node.
+
+<offset> can also be a pair of directions given in a table. This is how the *edge* of a node can be made into the
+center of rotation. For example, existing gate hinges in this mod have the offset {"front","left"}. This means that the
+gate will try to rotate around the center of the edge of the node where the front and left faces intersect.
+You should only use direction pairs that form a 90 degree angle.

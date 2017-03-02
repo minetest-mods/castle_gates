@@ -43,6 +43,8 @@ castle_gates.register_gate_slot = function(material)
 	minetest.register_node(mod_name..":"..material.name.."_gate_slot", {
 		drawtype = "nodebox",
 		description = S("@1 Gate Slot", desc),
+		_doc_items_longdesc = castle_gates.doc.gate_slot_longdesc,
+		_doc_items_usagehelp = castle_gates.doc.gate_slot_usagehelp,
 		tiles = tile,
 		paramtype = "light",
 		paramtype2 = "facedir",
@@ -66,6 +68,8 @@ castle_gates.register_gate_slot = function(material)
 	minetest.register_node(mod_name..":"..material.name.."_gate_slot_reverse", {
 		drawtype = "nodebox",
 		description = S("@1 Gate Slot Reverse", desc), 
+		_doc_items_longdesc = castle_gates.doc.gate_slot_reverse_longdesc,
+		_doc_items_usagehelp = castle_gates.doc.gate_slot_reverse_usagehelp,
 		tiles = tile,
 		paramtype = "light",
 		paramtype2 = "facedir",

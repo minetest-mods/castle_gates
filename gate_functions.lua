@@ -23,6 +23,7 @@ local get_dirs = function(facedir)
 	return dirs
 end
 
+-- Returns the axis that dir points along
 local dir_to_axis = function(dir)
 	if dir.x ~= 0 then
 		return "x"
@@ -33,6 +34,7 @@ local dir_to_axis = function(dir)
 	end
 end
 
+-- Given a hinge definition, turns it into an axis and placement that can be used by the door rotation.
 local interpret_hinge = function(hinge_def, pos, node_dirs)
 	local axis = dir_to_axis(node_dirs[hinge_def.axis]) 
 	
@@ -130,6 +132,8 @@ local get_door_layout = function(pos, facedir, player)
 	local tested = Pointset.create()
 	local can_slide_to = Pointset.create()
 	
+	local castle_gate_group_value -- this will be populated from the first gate node we encounter, which will be the one that was clicked on
+	
 	to_test:set_pos(pos, true)
 	
 	local test_pos, _ = to_test:pop()
@@ -152,8 +156,12 @@ local get_door_layout = function(pos, facedir, player)
 		if test_node_def.paramtype2 == "facedir" then
 			local test_node_dirs = get_dirs(test_node.param2)
 			local coplanar = vector.equals(test_node_dirs.back, door.directions.back)
+			
+			if castle_gate_group_value == nil and test_node_def.groups.castle_gate ~= nil then
+				castle_gate_group_value = test_node_def.groups.castle_gate -- read the group value from the first gate node encountered
+			end
 
-			if coplanar and test_node_def.groups.castle_gate then
+			if coplanar and test_node_def.groups.castle_gate == castle_gate_group_value then
 				local entry = {["pos"] = test_pos, ["node"] = test_node}
 				table.insert(door.all, entry)
 				if test_node_def._gate_hinge ~= nil then
