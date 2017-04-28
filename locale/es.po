@@ -230,11 +230,11 @@ msgstr "Ladrillo de Piedra"
 
 #: gate_slots.lua:45
 msgid "@1 Gate Slot"
-msgstr "@1 Espacio para Puerta"
+msgstr "Espacio para Puerta de @1"
 
 #: gate_slots.lua:70
 msgid "@1 Gate Slot Reverse"
-msgstr "@1 Espacio para Puerta Invertido"
+msgstr "Espacio para Puerta Invertido de @1"
 
 #: gates.lua:7
 msgid "Portcullis Bars"
