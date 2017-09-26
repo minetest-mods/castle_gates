@@ -91,34 +91,33 @@ castle_gates.register_gate_slot = function(material)
 	
 	
 	minetest.register_craft({
-	output = mod_name..":"..material.name.."_portcullis_slot 3",
+	output = mod_name..":"..material.name.."_gate_slot 2",
 	recipe = {
-		{material.craft_material,"",material.craft_material},
 		{material.craft_material,"",material.craft_material},
 		{material.craft_material,"",material.craft_material},
 		},
 	})
 	
 	minetest.register_craft({
-		output = mod_name..":"..material.name.."_portcullis_slot",
+		output = mod_name..":"..material.name.."_gate_slot",
 		type = "shapeless",
-		recipe = {mod_name..":"..material.name.."_portcullis_slot_reverse"},
+		recipe = {mod_name..":"..material.name.."_gate_slot_reverse"},
 	})
 	minetest.register_craft({
-		output = mod_name..":"..material.name.."_portcullis_slot_reverse",
+		output = mod_name..":"..material.name.."_gate_slot_reverse",
 		type = "shapeless",
-		recipe = {mod_name..":"..material.name.."_portcullis_slot"},
+		recipe = {mod_name..":"..material.name.."_gate_slot"},
 	})
 	
 	if burn_time > 0 then
 		minetest.register_craft({
 			type = "fuel",
-			recipe = mod_name..":"..material.name.."_portcullis_slot",
+			recipe = mod_name..":"..material.name.."_gate_slot",
 			burntime = burn_time * 2,
 		})
 		minetest.register_craft({
 			type = "fuel",
-			recipe = mod_name..":"..material.name.."_portcullis_slot_reverse",
+			recipe = mod_name..":"..material.name.."_gate_slot_reverse",
 			burntime = burn_time * 2,
 		})	
 	end
