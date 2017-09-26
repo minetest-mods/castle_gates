@@ -1,0 +1,274 @@
+# ITALIAN LOCALE FILE FOR THE CASTLE GATES MODULE
+# Copyright (C) 2017 Philipbenr And DanDuncombe
+# This file is distributed under the same license as the CASTLE GATES package.
+# Hamlet <h4mlet@riseup.net>, 2017.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Castle Gates\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-03-01 23:41-0700\n"
+"PO-Revision-Date: 2017-09-26 23:51+0100\n"
+"Last-Translator: Hamlet <h4mlet@riseup.net>\n"
+"Language-Team: \n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.6.10\n"
+
+#: doc.lua:11
+msgid "Heavy wooden bars designed to prevent entry even to siege equipment."
+msgstr ""
+"Pesanti sbarre di legno progettate per impedire l'accesso perfino "
+"all'equipaggiamento da assedio."
+
+#: doc.lua:12
+msgid ""
+"Place these bars in a structure together and they will slide as a unified "
+"gate when clicked on."
+msgstr ""
+"Componete una struttura mettendo insieme queste sbarre ed esse scorreranno "
+"come un'unica saracinesca quando ci si cliccherà sopra."
+
+#: doc.lua:14
+msgid ""
+"The bottom edge of a portcullis gate, with knobs to lock securely into the "
+"floor."
+msgstr ""
+"La parte inferiore di una saracinesca, con puntali per bloccarsi saldamente "
+"nel pavimento."
+
+#: doc.lua:15
+msgid ""
+"This block can be used to define the edge of a portcullius that meets up "
+"with another gate, should you have an arrangement like that. Otherwise it's "
+"just decorative."
+msgstr ""
+"Questo blocco può essere usato per definire l'estremità di una saracinesca "
+"che si incontra con un'altra, se doveste avere una tale disposizione. "
+"Altrimenti è solo decorativo."
+
+#: doc.lua:17
+msgid "A basic gate panel."
+msgstr "Un pannello di base per cancelli, porte e portoni."
+
+#: doc.lua:18
+msgid ""
+"This gate segment will move in unison with adjoining gate segments when "
+"right-clicked."
+msgstr ""
+"Questo segmento si muoverà all'unisono con altri segmenti adiacenti quando "
+"cliccato col tasto destro."
+
+#: doc.lua:20
+msgid "A gate panel with a defined edge."
+msgstr ""
+"Un pannello per cancelli, porte e portoni avente un'estremità definita."
+
+#: doc.lua:21
+msgid ""
+"The darkened edge of this panel marks the edge of the gate it's a part of. "
+"You can use these when building double doors to ensure the two parts swing "
+"separately, for example. Note that edges aren't strictly necessary for gates "
+"that stand alone."
+msgstr ""
+"L'estremità annerita di questo pannello contrassegna il bordo del cancello, "
+"porta o portone di cui fa parte. Per esempio potete usarla quando costruite "
+"doppi battenti per assicurarvi che le due parti ruotino separatamente. Si "
+"noti che queste estremità non sono strettamente necessarie per cancelli, "
+"porte e portoni a battente singolo."
+
+#: doc.lua:23
+msgid "A gate edge with a handle."
+msgstr "Una estremità di cancello, porta o portone con una maniglia."
+
+#: doc.lua:24
+msgid ""
+"The handle is basically decorative, a door this size can be swung by "
+"clicking anywhere on it. But the darkened edge of this panel is useful for "
+"defining the edge of a gate when it abuts a partner to the side."
+msgstr ""
+"Fondamentalmente la maniglia è decorativa, un cancello o porta di queste "
+"dimensioni possono essere aperti cliccando un punto qualunque su di essi. Ma "
+"il bordo annerito di questo pannello è utile per stabilire la fine di un "
+"battente quando confina con un altro."
+
+#: doc.lua:26
+msgid "A hinged gate segment that allows a gate to swing."
+msgstr ""
+"Un segmento di cancello, porta o portone provvisto di un cardine che ne "
+"consente la rotazione."
+
+#: doc.lua:27
+msgid ""
+"If you have more than one hinge in your gate, make sure the hinges line up "
+"correctly otherwise the gate will not be able to swing. The hinge is the "
+"protruding block along the edge of the gate panel."
+msgstr ""
+"Se avete più di un cardine nel vostro cancello, porta o portone, accertatevi "
+"che siano allineati correttamente altrimenti non potrà ruotare. Il cardine è "
+"la protuberanza lungo il bordo del pannello."
+
+#: doc.lua:29
+msgid "A block with a slot to allow an adjacent sliding gate through."
+msgstr ""
+"Un blocco provvisto di una fessura per consentire a una porta scorrevole di "
+"scivolarci attraverso."
+
+#: doc.lua:30
+msgid ""
+"This block is designed to extend into a neighboring node that a sliding gate "
+"passes through, to provide a tight seal for the gate to move through without "
+"allowing anything else to squeeze in."
+msgstr ""
+"Questo blocco è progettato per estendersi in un nodo vicino attraverso cui "
+"scivoli una porta scorrevole, per fornire una chiusura ermetica alla porta o "
+"saracinesca che gli passa attraverso senza permettere a niente altro di "
+"intrufolarvisi."
+
+#: doc.lua:32
+msgid ""
+"A block that extends into an adjacent node to provide a tight seal for a "
+"large gate."
+msgstr ""
+"Un blocco che si estende in un nodo adiacente per fornire una chiusura "
+"ermetica per un portone."
+
+#: doc.lua:33
+msgid ""
+"Two nodes cannot occupy the same space, but this block extends into a "
+"neighboring node's space to allow for gates to form a tight seal. It can be "
+"used with sliding gates or swinging gates."
+msgstr ""
+"Due nodi non possono occupare lo stesso spazio, ma questo blocco si estende "
+"nello spazio di un nodo vicino per consentire a cancelli, porte, portoni e "
+"saracinesche di formare una chiusura ermetica. Può essere usato con porte "
+"scorrevoli o a rotazione."
+
+#: doc.lua:37
+msgid "Gates"
+msgstr "Cancelli, porte, portoni e saracinesche"
+
+#: doc.lua:38
+msgid ""
+"Gates are large multi-node constructions that swing on hinges or slide out "
+"of the way when triggered."
+msgstr ""
+"Cancelli, porte, portoni e saracinesche sono costruzioni multi-nodo che "
+"quando vengono attivate ruotano su dei cardini o scivolano via."
+
+#: doc.lua:43
+msgid "Gate construction"
+msgstr "Costruzione di cancelli, porte, portoni e saracinesche"
+
+#: doc.lua:45
+msgid ""
+"Gates are multi-node constructions, usually (though not always) consisting "
+"of multiple node types that fit together into a unified whole. The "
+"orientation of gate nodes is significant, so a screwdriver will be a helpful "
+"tool when constructing gates.\n"
+"\n"
+"A gate's extent is determined by a \"flood fill\" operation. When you "
+"trigger a gate block, all compatible neighboring blocks will be considered "
+"part of the same structure and will move in unison. Only gate blocks that "
+"are aligned with each other will be considered part of the same gate. If you "
+"wish to build adjoining gates (for example, a large pair of double doors "
+"that meet in the center) you'll need to make use of gate edge blocks to "
+"prevent it all from being considered one big door. Note that if your gate "
+"does not abut any other gates you don't actually need to define its edges "
+"this way - you don't have to use edge blocks in this case.\n"
+"\n"
+"If a gate has no hinge nodes it will be considered a sliding gate. When "
+"triggered, the gate code will search for a direction that the gate can slide "
+"in and will move it in that direction at a rate of one block-length per "
+"second. Once it reaches an obstruction it will stop, and when triggered "
+"again it will try sliding in the opposite direction.\n"
+"\n"
+"If a gate has hinge nodes then triggering it will cause the gate to try "
+"swinging around the hinge. If the gate has multiple hinges and they don't "
+"line up properly the gate will be unable to move. Note that the gate can "
+"only exist in 90-degree increments of orientation, but the gate still looks "
+"for obstructions in the region it is swinging through and will not swing if "
+"there's something in the way."
+msgstr ""
+"Cancelli, porte, portoni e saracinesche sono costruzioni multi-nodo, di "
+"solito (anche se non sempre) costituite da molteplici tipi di nodi che si "
+"uniscono in un tutt'uno. L'orientamento è importante, perciò un cacciavite "
+"sarà uno strumento utile quando si costruiscono cancelli, porte, ecc.\n"
+"\n"
+"L'estensione di cancelli e simili è stabilita da un'operazione \"flood fill"
+"\" (allagamento riempitivo). Quando attivate un blocco di cancello, tutte le "
+"parti limitrofe compatibili verranno considerate parte della stessa "
+"struttura e si muoveranno all'unisono. Solamente i blocchi che sono "
+"allineati l'un l'altro saranno considerati come parte dello stesso cancello. "
+"Se desiderate costruire cancelli confinanti (per esempio, un paio di grossi "
+"battenti che si incontrano nel mezzo) dovrete fare uso dei blocchi-estremità "
+"per impedire che il tutto sia considerato come un'unica grossa porta. Si "
+"noti che se il vostro cancello non confina con nessun altro non avete la "
+"necessità di definirne le estremità in questo modo - in questo caso non è "
+"necessario che usiate blocchi-estremità.\n"
+"\n"
+"Se un cancello, ecc. non ha nodi coi cardini sarà considerato come "
+"scorrevole. Quando attivato, il programma del cancello cercherà una "
+"direzione in cui possa scivolare e lo muoverà in quella direzione al passo "
+"della distanza di un nodo al secondo. Quando raggiungerà un ostacolo si "
+"fermerà, e quando attivato ancora tenterà di scorrere nella direzione "
+"opposta.\n"
+"\n"
+"Se un cancello, ecc. ha dei nodi coi cardini, attivandolo lo si farà ruotare "
+"attorno al cardine. Se il cancello ha più cardini e questi non sono "
+"allineati correttamente non riuscirà a muoversi. Si noti che il cancello può "
+"svilupparsi solo in incrementi di 90° di orientamento, e controllerà la "
+"presenza di ostacoli nella zona in cui ruota e non ruoterà se c'è qualcosa "
+"di mezzo."
+
+#: doors.lua:8
+msgid "Oak Door"
+msgstr "Porta di quercia"
+
+#: doors.lua:22
+msgid "Jail Door"
+msgstr "Porta della prigione"
+
+#: doors.lua:43
+msgid "Jail Bars"
+msgstr "Sbarre della prigione"
+
+#: gate_slots.lua:36
+msgid "Stonebrick"
+msgstr "Mattoni di pietra"
+
+#: gate_slots.lua:45
+msgid "@1 Gate Slot"
+msgstr "Alloggio di @1 per cancelli, porte, portoni e saracinesche"
+
+#: gate_slots.lua:70
+msgid "@1 Gate Slot Reverse"
+msgstr ""
+"Rovescio dell'alloggio di @1 per cancelli, porte, portoni e saracinesche."
+
+#: gates.lua:7
+msgid "Portcullis Bars"
+msgstr "Sbarre della saracinesca"
+
+#: gates.lua:37
+msgid "Portcullis Bottom"
+msgstr "Estremità inferiore della saracinesca"
+
+#: gates.lua:104
+msgid "Gate Door"
+msgstr "Segmento di cancello, porta o portone"
+
+#: gates.lua:136
+msgid "Gate Door Edge"
+msgstr "Estremità di cancello, porta o portone"
+
+#: gates.lua:175
+msgid "Gate Door With Handle"
+msgstr "Cancello, porta o portone con maniglia"
+
+#: gates.lua:218
+msgid "Gate Door With Hinge"
+msgstr "Cancello, porta o portone con cardine"
