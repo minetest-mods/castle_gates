@@ -153,9 +153,9 @@ local get_door_layout = function(pos, facedir, player)
 		local test_node_def = minetest.registered_nodes[test_node.name]
 		can_slide_to:set_pos(test_pos, test_node_def.buildable_to == true)
 		
-		if test_node_def.paramtype2 == "facedir" then
+		if test_node_def.paramtype2 == "facedir" then -- prospective door nodes need to be of type facedir
 			local test_node_dirs = get_dirs(test_node.param2)
-			local coplanar = vector.equals(test_node_dirs.back, door.directions.back)
+			local coplanar = vector.equals(test_node_dirs.back, door.directions.back) -- the "back" vector needs to point in the same direction as the rest of the door
 			
 			if castle_gate_group_value == nil and test_node_def.groups.castle_gate ~= nil then
 				castle_gate_group_value = test_node_def.groups.castle_gate -- read the group value from the first gate node encountered
@@ -163,17 +163,18 @@ local get_door_layout = function(pos, facedir, player)
 
 			if coplanar and test_node_def.groups.castle_gate == castle_gate_group_value then
 				local entry = {["pos"] = test_pos, ["node"] = test_node}
-				table.insert(door.all, entry)
-				if test_node_def._gate_hinge ~= nil then
+				table.insert(door.all, entry) -- it's definitely a gate node of some sort.
+				if test_node_def._gate_hinge ~= nil then -- it's a hinge type of node, need to do extra work
 					local axis, placement = interpret_hinge(test_node_def._gate_hinge, test_pos, test_node_dirs)
-					if door.hinge == nil then
+					if door.hinge == nil then -- this is the first hinge we've encountered.
 						door.hinge = {axis=axis, placement=placement}
-					elseif door.hinge.axis ~= axis then
+						door.directions = test_node_dirs -- force the door as a whole to use the same reference frame as the first hinge
+					elseif door.hinge.axis ~= axis then -- there was a previous hinge. Do they rotate on the same axis?
 						return nil -- Misaligned hinge axes, door cannot rotate.
 					else
 						local axis_dir = {x=0, y=0, z=0}
 						axis_dir[axis] = 1
-						local displacement = vector.normalize(vector.subtract(placement, door.hinge.placement))
+						local displacement = vector.normalize(vector.subtract(placement, door.hinge.placement)) -- check if this new hinge is displaced relative to the first hinge on any axis other than the rotation axis
 						if not (vector.equals(displacement, axis_dir) or vector.equals(displacement, vector.multiply(axis_dir, -1))) then
 							return nil -- Misaligned hinge offset, door cannot rotate.
 						end
@@ -251,10 +252,15 @@ local get_door_layout = function(pos, facedir, player)
 					
 					local swing_corner = {} -- the corner of the square "arc" that a Minetest gate swings through
 					local scan_dir
+					minetest.debug(axis)
+					minetest.debug(backfront)
+					minetest.debug(leftright)
 					swing_corner[axis] = door_node.pos[axis]
 					swing_corner[backfront] = newpos[backfront]
 					swing_corner[leftright] = door_node.pos[leftright]
 					if not (vector.equals(newpos, swing_corner) or vector.equals(door_node.pos, swing_corner)) then -- we're right next to the hinge, no need for further testing
+						minetest.debug(dump(newpos))
+						minetest.debug(dump(swing_corner))
 						scan_dir = vector.direction(newpos, swing_corner) -- get the direction from the new door position toward the swing corner
 						repeat
 							newpos = vector.add(newpos, scan_dir) -- we start with newpos on the destination node, which has already been tested.
