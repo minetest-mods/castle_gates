@@ -252,15 +252,10 @@ local get_door_layout = function(pos, facedir, player)
 					
 					local swing_corner = {} -- the corner of the square "arc" that a Minetest gate swings through
 					local scan_dir
-					minetest.debug(axis)
-					minetest.debug(backfront)
-					minetest.debug(leftright)
 					swing_corner[axis] = door_node.pos[axis]
 					swing_corner[backfront] = newpos[backfront]
 					swing_corner[leftright] = door_node.pos[leftright]
 					if not (vector.equals(newpos, swing_corner) or vector.equals(door_node.pos, swing_corner)) then -- we're right next to the hinge, no need for further testing
-						minetest.debug(dump(newpos))
-						minetest.debug(dump(swing_corner))
 						scan_dir = vector.direction(newpos, swing_corner) -- get the direction from the new door position toward the swing corner
 						repeat
 							newpos = vector.add(newpos, scan_dir) -- we start with newpos on the destination node, which has already been tested.
