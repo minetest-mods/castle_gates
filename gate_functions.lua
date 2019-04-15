@@ -116,6 +116,8 @@ end
 
 
 local get_door_layout = function(pos, facedir, player)
+	if facedir > 23 then return nil end -- A bug in another mod once resulted in bad param2s being written to nodes, this will at least prevent crashes if something like that happens again.
+
 	-- This method does a flood-fill looking for all nodes that meet the following criteria:
 	-- belongs to a "castle_gate" group
 	-- has the same "back" direction as the initial node
@@ -153,7 +155,7 @@ local get_door_layout = function(pos, facedir, player)
 		local test_node_def = minetest.registered_nodes[test_node.name]
 		can_slide_to:set_pos(test_pos, test_node_def.buildable_to == true)
 		
-		if test_node_def.paramtype2 == "facedir" then -- prospective door nodes need to be of type facedir
+		if test_node_def.paramtype2 == "facedir" and test_node.param2 <= 23 then -- prospective door nodes need to be of type facedir and have a valid param2
 			local test_node_dirs = get_dirs(test_node.param2)
 			local coplanar = vector.equals(test_node_dirs.back, door.directions.back) -- the "back" vector needs to point in the same direction as the rest of the door
 			
