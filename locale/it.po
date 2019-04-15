@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Castle Gates\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-01 23:41-0700\n"
+"POT-Creation-Date: 2019-04-14 22:15-0600\n"
 "PO-Revision-Date: 2017-09-26 23:51+0100\n"
 "Last-Translator: Hamlet <h4mlet@riseup.net>\n"
 "Language-Team: \n"
@@ -228,13 +228,51 @@ msgstr ""
 msgid "Oak Door"
 msgstr "Porta di quercia"
 
-#: doors.lua:22
+#: doors.lua:37
 msgid "Jail Door"
 msgstr "Porta della prigione"
 
-#: doors.lua:43
+#: doors.lua:54
 msgid "Jail Bars"
 msgstr "Sbarre della prigione"
+
+#: gates.lua:23
+#, fuzzy
+msgid "@1 Portcullis Bars"
+msgstr "Sbarre della saracinesca"
+
+#: gates.lua:53
+#, fuzzy
+msgid "@1 Portcullis Bottom"
+msgstr "Estremità inferiore della saracinesca"
+
+#: gates.lua:113
+#, fuzzy
+msgid "@1 Gate Door"
+msgstr "Segmento di cancello, porta o portone"
+
+#: gates.lua:145
+#, fuzzy
+msgid "@1 Gate Door Edge"
+msgstr "Estremità di cancello, porta o portone"
+
+#: gates.lua:184
+#, fuzzy
+msgid "@1 Gate Door With Handle"
+msgstr "Cancello, porta o portone con maniglia"
+
+#: gates.lua:227
+#, fuzzy
+msgid "@1 Gate Door With Hinge"
+msgstr "Cancello, porta o portone con cardine"
+
+#: gates.lua:256
+msgid "Wooden"
+msgstr ""
+
+#: gates.lua:268
+msgid "Steel"
+msgstr ""
 
 #: gate_slots.lua:36
 msgid "Stonebrick"
@@ -248,27 +286,3 @@ msgstr "Alloggio di @1 per cancelli, porte, portoni e saracinesche"
 msgid "@1 Gate Slot Reverse"
 msgstr ""
 "Rovescio dell'alloggio di @1 per cancelli, porte, portoni e saracinesche."
-
-#: gates.lua:7
-msgid "Portcullis Bars"
-msgstr "Sbarre della saracinesca"
-
-#: gates.lua:37
-msgid "Portcullis Bottom"
-msgstr "Estremità inferiore della saracinesca"
-
-#: gates.lua:104
-msgid "Gate Door"
-msgstr "Segmento di cancello, porta o portone"
-
-#: gates.lua:136
-msgid "Gate Door Edge"
-msgstr "Estremità di cancello, porta o portone"
-
-#: gates.lua:175
-msgid "Gate Door With Handle"
-msgstr "Cancello, porta o portone con maniglia"
-
-#: gates.lua:218
-msgid "Gate Door With Hinge"
-msgstr "Cancello, porta o portone con cardine"

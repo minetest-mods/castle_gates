@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-01 23:41-0700\n"
+"POT-Creation-Date: 2019-04-14 22:15-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -157,12 +157,44 @@ msgstr ""
 msgid "Oak Door"
 msgstr ""
 
-#: doors.lua:22
+#: doors.lua:37
 msgid "Jail Door"
 msgstr ""
 
-#: doors.lua:43
+#: doors.lua:54
 msgid "Jail Bars"
+msgstr ""
+
+#: gates.lua:23
+msgid "@1 Portcullis Bars"
+msgstr ""
+
+#: gates.lua:53
+msgid "@1 Portcullis Bottom"
+msgstr ""
+
+#: gates.lua:113
+msgid "@1 Gate Door"
+msgstr ""
+
+#: gates.lua:145
+msgid "@1 Gate Door Edge"
+msgstr ""
+
+#: gates.lua:184
+msgid "@1 Gate Door With Handle"
+msgstr ""
+
+#: gates.lua:227
+msgid "@1 Gate Door With Hinge"
+msgstr ""
+
+#: gates.lua:256
+msgid "Wooden"
+msgstr ""
+
+#: gates.lua:268
+msgid "Steel"
 msgstr ""
 
 #: gate_slots.lua:36
@@ -175,28 +207,4 @@ msgstr ""
 
 #: gate_slots.lua:70
 msgid "@1 Gate Slot Reverse"
-msgstr ""
-
-#: gates.lua:7
-msgid "Portcullis Bars"
-msgstr ""
-
-#: gates.lua:37
-msgid "Portcullis Bottom"
-msgstr ""
-
-#: gates.lua:104
-msgid "Gate Door"
-msgstr ""
-
-#: gates.lua:136
-msgid "Gate Door Edge"
-msgstr ""
-
-#: gates.lua:175
-msgid "Gate Door With Handle"
-msgstr ""
-
-#: gates.lua:218
-msgid "Gate Door With Hinge"
 msgstr ""

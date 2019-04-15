@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-01 23:41-0700\n"
+"POT-Creation-Date: 2019-04-14 22:15-0600\n"
 "PO-Revision-Date: 2017-04-28 11:56-0400\n"
 "Last-Translator: Carlos Barraza\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -31,8 +31,8 @@ msgid ""
 "The bottom edge of a portcullis gate, with knobs to lock securely into the "
 "floor."
 msgstr ""
-"Es el borde inferior de una puerta rastrillo, con perillas para bloquearla con "
-"seguridad en el piso"
+"Es el borde inferior de una puerta rastrillo, con perillas para bloquearla "
+"con seguridad en el piso"
 
 #: doc.lua:15
 msgid ""
@@ -41,8 +41,8 @@ msgid ""
 "just decorative."
 msgstr ""
 "Este bloque puede ser usado para definir el borde de una puerta rastrillo "
-"que esta cerca de otra  puerta, si tiene varias puertas independientes, "
-"de lo contrario es simplemente decorativo"
+"que esta cerca de otra  puerta, si tiene varias puertas independientes, de "
+"lo contrario es simplemente decorativo"
 
 #: doc.lua:17
 msgid "A basic gate panel."
@@ -67,10 +67,10 @@ msgid ""
 "separately, for example. Note that edges aren't strictly necessary for gates "
 "that stand alone."
 msgstr ""
-"El borde oscurecido de este panel marca el limite de la puerta."
-"Usted puede utilizar estos bloques para construir puertas dobles para asegurar "
-"que las dos puertas funcionen por separado, por ejemplo. Tenga en cuenta que "
-"los bordes no son estrictamente necesarios para las puertas individuales"
+"El borde oscurecido de este panel marca el limite de la puerta. Usted puede "
+"utilizar estos bloques para construir puertas dobles para asegurar que las "
+"dos puertas funcionen por separado, por ejemplo. Tenga en cuenta que los "
+"bordes no son estrictamente necesarios para las puertas individuales"
 
 #: doc.lua:23
 msgid "A gate edge with a handle."
@@ -106,7 +106,7 @@ msgstr ""
 msgid "A block with a slot to allow an adjacent sliding gate through."
 msgstr ""
 "Un bloque con una ranura en el medio para que una puerta deslizante pueda "
-"pasar a través de ella."
+"pasar a travs de ella."
 
 #: doc.lua:30
 msgid ""
@@ -146,8 +146,8 @@ msgid ""
 "Gates are large multi-node constructions that swing on hinges or slide out "
 "of the way when triggered."
 msgstr ""
-"Las puertas grandes son construcciones multi nodo que se abren usando bisagras "
-"o se deslizan hacia arriba cuando se activan"
+"Las puertas grandes son construcciones multi nodo que se abren usando "
+"bisagras o se deslizan hacia arriba cuando se activan"
 
 #: doc.lua:43
 msgid "Gate construction"
@@ -211,17 +211,54 @@ msgstr ""
 "puerta todavía busca obstrucciones en la región que está moviéndose y no "
 "girara si hay algo en el camino."
 
-
 #: doors.lua:8
 msgid "Oak Door"
 msgstr "Puerta de Roble"
 
-#: doors.lua:22
+#: doors.lua:37
 msgid "Jail Door"
 msgstr "Puerta de Cárcel"
 
-#: doors.lua:43
+#: doors.lua:54
 msgid "Jail Bars"
+msgstr ""
+
+#: gates.lua:23
+#, fuzzy
+msgid "@1 Portcullis Bars"
+msgstr "Barras de la Puerta Rastrillo"
+
+#: gates.lua:53
+#, fuzzy
+msgid "@1 Portcullis Bottom"
+msgstr "Terminación de la Puerta Rastrillo"
+
+#: gates.lua:113
+#, fuzzy
+msgid "@1 Gate Door"
+msgstr "Porción de la Puerta"
+
+#: gates.lua:145
+#, fuzzy
+msgid "@1 Gate Door Edge"
+msgstr "Borde de la Puerta"
+
+#: gates.lua:184
+#, fuzzy
+msgid "@1 Gate Door With Handle"
+msgstr "Pestillo de la Puerta"
+
+#: gates.lua:227
+#, fuzzy
+msgid "@1 Gate Door With Hinge"
+msgstr "Bisagra de la Puerta"
+
+#: gates.lua:256
+msgid "Wooden"
+msgstr ""
+
+#: gates.lua:268
+msgid "Steel"
 msgstr ""
 
 #: gate_slots.lua:36
@@ -235,27 +272,3 @@ msgstr "Espacio para Puerta de @1"
 #: gate_slots.lua:70
 msgid "@1 Gate Slot Reverse"
 msgstr "Espacio para Puerta Invertido de @1"
-
-#: gates.lua:7
-msgid "Portcullis Bars"
-msgstr "Barras de la Puerta Rastrillo"
-
-#: gates.lua:37
-msgid "Portcullis Bottom"
-msgstr "Terminación de la Puerta Rastrillo"
-
-#: gates.lua:104
-msgid "Gate Door"
-msgstr "Porción de la Puerta"
-
-#: gates.lua:136
-msgid "Gate Door Edge"
-msgstr "Borde de la Puerta"
-
-#: gates.lua:175
-msgid "Gate Door With Handle"
-msgstr "Pestillo de la Puerta"
-
-#: gates.lua:218
-msgid "Gate Door With Hinge"
-msgstr "Bisagra de la Puerta"
