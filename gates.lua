@@ -1,6 +1,15 @@
--- internationalization boilerplate
-local MP = minetest.get_modpath(minetest.get_current_modname())
-local S, NS = dofile(MP.."/intllib.lua")
+local MP, S, NS = nil
+
+if (minetest.get_modpath("intllib") == nil) then
+	S = minetest.get_translator("castle_gates")
+
+else
+	-- internationalization boilerplate
+	MP = minetest.get_modpath(minetest.get_current_modname())
+	S, NS = dofile(MP.."/intllib.lua")
+
+end
+
 
 minetest.register_alias("castle_gates:gate_edge",				"castle_gates:wood_gate_edge")
 minetest.register_alias("castle_gates:gate_edge_handle",		"castle_gates:wood_gate_edge_handle")

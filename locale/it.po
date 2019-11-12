@@ -1,22 +1,22 @@
 # ITALIAN LOCALE FILE FOR THE CASTLE GATES MODULE
 # Copyright (C) 2017 Philipbenr And DanDuncombe
 # This file is distributed under the same license as the CASTLE GATES package.
-# Hamlet <h4mlet@riseup.net>, 2017.
+# Hamlet <54187342+h4ml3t@users.noreply.github.com> 2017, 2019.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Castle Gates\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-04-14 22:15-0600\n"
-"PO-Revision-Date: 2017-09-26 23:51+0100\n"
-"Last-Translator: Hamlet <h4mlet@riseup.net>\n"
+"PO-Revision-Date: 2019-11-11 23:23+0100\n"
+"Last-Translator: Hamlet <54187342+h4ml3t@users.noreply.github.com>\n"
 "Language-Team: \n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.6.10\n"
+"X-Generator: Poedit 2.2.1\n"
 
 #: doc.lua:11
 msgid "Heavy wooden bars designed to prevent entry even to siege equipment."
@@ -237,46 +237,40 @@ msgid "Jail Bars"
 msgstr "Sbarre della prigione"
 
 #: gates.lua:23
-#, fuzzy
 msgid "@1 Portcullis Bars"
-msgstr "Sbarre della saracinesca"
+msgstr "Sbarre della saracinesca di @1"
 
 #: gates.lua:53
-#, fuzzy
 msgid "@1 Portcullis Bottom"
-msgstr "Estremità inferiore della saracinesca"
+msgstr "Estremità inferiore della saracinesca di @1"
 
 #: gates.lua:113
-#, fuzzy
 msgid "@1 Gate Door"
-msgstr "Segmento di cancello, porta o portone"
+msgstr "Porta di @1 del cancello"
 
 #: gates.lua:145
-#, fuzzy
 msgid "@1 Gate Door Edge"
-msgstr "Estremità di cancello, porta o portone"
+msgstr "Estremità della porta di @1 del cancello"
 
 #: gates.lua:184
-#, fuzzy
 msgid "@1 Gate Door With Handle"
-msgstr "Cancello, porta o portone con maniglia"
+msgstr "Porta di @1 con maniglia del cancello"
 
 #: gates.lua:227
-#, fuzzy
 msgid "@1 Gate Door With Hinge"
-msgstr "Cancello, porta o portone con cardine"
+msgstr "Porta di @1 con cardine del cancello"
 
 #: gates.lua:256
 msgid "Wooden"
-msgstr ""
+msgstr "legno"
 
 #: gates.lua:268
 msgid "Steel"
-msgstr ""
+msgstr "acciaio"
 
 #: gate_slots.lua:36
 msgid "Stonebrick"
-msgstr "Mattoni di pietra"
+msgstr "mattone di pietra"
 
 #: gate_slots.lua:45
 msgid "@1 Gate Slot"
@@ -285,4 +279,4 @@ msgstr "Alloggio di @1 per cancelli, porte, portoni e saracinesche"
 #: gate_slots.lua:70
 msgid "@1 Gate Slot Reverse"
 msgstr ""
-"Rovescio dell'alloggio di @1 per cancelli, porte, portoni e saracinesche."
+"Rovescio dell'alloggio di @1 per cancelli, porte, portoni e saracinesche"

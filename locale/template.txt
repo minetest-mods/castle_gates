@@ -1,0 +1,16 @@
+# textdomain:castle_gates
+
+Oak Door=
+Jail Door=
+Jail Bars=
+@1 Portcullis Bars=
+@1 Portcullis Bottom=
+@1 Gate Door=
+@1 Gate Door Edge=
+@1 Gate Door With Handle=
+@1 Gate Door With Hinge=
+Wooden=
+Steel=
+Stonebrick=
+@1 Gate Slot=
+@1 Gate Slot Reverse=

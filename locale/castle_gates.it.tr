@@ -1,0 +1,16 @@
+# textdomain:castle_gates
+
+Oak Door=Porta di quercia
+Jail Door=Porta della prigione
+Jail Bars=Sbarre della prigione
+@1 Portcullis Bars=Sbarre della saracinesca di @1
+@1 Portcullis Bottom=Estremità inferiore della saracinesca di @1
+@1 Gate Door=Porta di @1 del cancello
+@1 Gate Door Edge=Estremità della porta di @1 del cancello
+@1 Gate Door With Handle=Porta di @1 con maniglia del cancello
+@1 Gate Door With Hinge=Porta di @1 con cardine del cancello
+Wooden=legno
+Steel=acciaio
+Stonebrick=mattone di pietra
+@1 Gate Slot=Alloggio di @1 del cancello
+@1 Gate Slot Reverse=Rovescio dell'alloggio di @1 del cancello
