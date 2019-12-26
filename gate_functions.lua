@@ -296,10 +296,32 @@ local get_door_layout = function(pos, facedir, player)
 	return door
 end
 
+local switch_map
+local update_switch_map = function(old_pos, new_pos)
+	if not switch_map then
+		switch_map = castle_gates.switch_map
+	end
+	local door_node_old_pos_hash = minetest.hash_node_position(old_pos)
+	local switches = switch_map[door_node_old_pos_hash]
+	if switches then
+		local door_node_new_pos_hash = minetest.hash_node_position(new_pos)
+		switch_map[door_node_new_pos_hash] = switches
+		switch_map[door_node_old_pos_hash] = nil
+		for switch_hash, _ in pairs(switches) do
+			local switch_referencing_this_node = switch_map[switch_hash]
+			switch_referencing_this_node[door_node_old_pos_hash] = nil
+			switch_referencing_this_node[door_node_new_pos_hash] = true				
+		end
+		castle_gates.save_switch_data()
+	end
+end
 
 local slide_gate = function(door, direction)
 	for _, door_node in pairs(door.all) do
-		door_node.pos = vector.add(door_node.pos, door.directions[direction])
+		local old_pos = door_node.pos
+		local new_pos = vector.add(old_pos, door.directions[direction])
+		door_node.pos = new_pos
+		update_switch_map(old_pos, new_pos)
 	end
 	door.previous_move = direction
 end
@@ -313,7 +335,10 @@ local rotate_door = function (door, direction)
 	local axis = door.hinge.axis
 	
 	for _, door_node in pairs(door.all) do
-		door_node.pos = rotate_pos_displaced(door_node.pos, origin, axis, direction)
+		local old_pos = door_node.pos
+		local new_pos = rotate_pos_displaced(old_pos, origin, axis, direction)
+		door_node.pos = new_pos
+		update_switch_map(old_pos, new_pos)
 		door_node.node.param2 = facedir_rotate[axis][direction][door_node.node.param2]
 	end
 	return true

@@ -9,3 +9,6 @@ License Textures: Napiophelios  - CC-BY-SA 3.0
 -castle_jailbars.png
 -castle_oak_door_inv.png
 -castle_steel.png
+
+
+castle_gates_linkage.png was made by combining crafting.gears.png (License MIT 2017 by FaceDeer) and castle_chandelier_chain.png (license CC-BY-SA 3.0 by Philipner) and so it is relicensed CC-BY-SA 3.0
