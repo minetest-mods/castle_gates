@@ -80,6 +80,45 @@ local swap_switch = function(pos, node)
 	end
 end
 
+local switch_on_rightclick = function(pos, node, clicker, itemstack, pointed_thing)
+	local player_name
+	if clicker then
+		player_name = clicker:get_player_name()
+	end
+	local switch_hash = minetest.hash_node_position(pos)
+	local targets = switch_map[switch_hash]
+	if targets then
+		local invalid_gates = {}
+		local triggered = false
+		for target_hash, _ in pairs(targets) do
+			local target_pos = minetest.get_position_from_hash(target_hash)
+			local target_node = minetest.get_node(target_pos)
+			if minetest.get_item_group(target_node.name, "castle_gate") == 0 then
+				table.insert(invalid_gates, target_hash)
+			else
+				castle_gates.trigger_gate(target_pos, target_node, clicker)
+				triggered = true
+			end
+		end
+		if triggered then
+			swap_switch(pos, node)
+		end
+		-- if there were invalid gate targets, remove those gate targets from all switches pointing to them
+		-- and then remove the invalid gate targets themselves
+		for _, invalid_target in ipairs(invalid_gates) do
+			remove_switch_hash(invalid_target)
+			minetest.chat_send_all("removing invalid gate target from switch")
+		end
+		if player_name then
+			minetest.chat_send_player(player_name, "Gate triggered")
+		end
+	else
+		if player_name then
+			minetest.chat_send_player(player_name, "Switch not connected to a gate")			
+		end
+	end
+end
+
 local switch_def = {
 	description = S("Gate Switch"),
 	_doc_items_longdesc = nil,
@@ -111,42 +150,22 @@ local switch_def = {
 	},
 	drops = "castle_gates:switch",
 	is_ground_content = false,
-	on_rightclick = function(pos, node, clicker, itemstack, pointed_thing)
-		local player_name = clicker:get_player_name()
-		local switch_hash = minetest.hash_node_position(pos)
-		local targets = switch_map[switch_hash]
-		if targets then
-			local invalid_gates = {}
-			local triggered = false
-			for target_hash, _ in pairs(targets) do
-				local target_pos = minetest.get_position_from_hash(target_hash)
-				local target_node = minetest.get_node(target_pos)
-				if minetest.get_item_group(target_node.name, "castle_gate") == 0 then
-					table.insert(invalid_gates, target_hash)
-				else
-					castle_gates.trigger_gate(target_pos, target_node, clicker)
-					triggered = true
-				end
-			end
-			if triggered then
-				swap_switch(pos, node)
-			end
-			-- if there were invalid gate targets, remove those gate targets from all switches pointing to them
-			-- and then remove the invalid gate targets themselves
-			for _, invalid_target in ipairs(invalid_gates) do
-				remove_switch_hash(invalid_target)
-				minetest.chat_send_all("removing invalid gate target from switch")
-			end
-			minetest.chat_send_player(player_name, "Gate triggered")
-		else
-			minetest.chat_send_player(player_name, "Switch not connected to a gate")			
-		end
-	end,
+	on_rightclick = switch_on_rightclick,
 	on_destruct = function(pos)
 		local switch_hash = minetest.hash_node_position(pos)
 		remove_switch_hash(switch_hash)
 	end,
 }
+
+if minetest.get_modpath("mesecons") then
+	switch_def.mesecons = {
+		effector = {
+			action_on = function(pos, node)
+				switch_on_rightclick(pos, node)
+			end,
+		}
+	}
+end
 
 local function deep_copy(input)
 	if type(input) ~= "table" then

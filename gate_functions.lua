@@ -146,7 +146,7 @@ local get_door_layout = function(pos, facedir, player)
 			return nil
 		end
 		
-		if minetest.is_protected(test_pos, player:get_player_name()) and not minetest.check_player_privs(player, "protection_bypass") then
+		if player and minetest.is_protected(test_pos, player:get_player_name()) and not minetest.check_player_privs(player, "protection_bypass") then
 			door.contains_protected_node = true
 		end
 		
