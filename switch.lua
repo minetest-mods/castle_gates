@@ -375,3 +375,19 @@ minetest.register_craft({
 		{"default:steel_ingot","castle_gates:linkage","default:steel_ingot"},
 	}
 })
+
+-- Remove any hud stuff when a player dies or leaves
+minetest.register_on_dieplayer(function(objectref, reason)
+	local player_name = objectref:get_player_name()
+	local player_hud_ids = waypoint_huds[player_name]
+	if player_hud_ids then
+		for _, hud_id in pairs(player_hud_ids) do
+			objectref:hud_remove(hud_id)
+		end
+		waypoint_huds[player_name] = nil
+	end
+end)
+minetest.register_on_leaveplayer(function(objectref, timed_out)
+	local player_name = objectref:get_player_name()
+	waypoint_huds[player_name] = nil
+end)
