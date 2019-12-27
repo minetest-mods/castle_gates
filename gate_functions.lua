@@ -1,4 +1,11 @@
+-- internationalization boilerplate
 local MP = minetest.get_modpath(minetest.get_current_modname())
+local S, NS = nil
+if (minetest.get_modpath("intllib") == nil) then
+	S = minetest.get_translator("castle_gates")
+else
+	S, NS = dofile(MP.."/intllib.lua")
+end
 
 -- Given a facedir, returns a set of all the corresponding directions
 local get_dirs = function(facedir)

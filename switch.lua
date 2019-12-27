@@ -1,13 +1,10 @@
-local MP, S, NS = nil
-
+-- internationalization boilerplate
+local MP = minetest.get_modpath(minetest.get_current_modname())
+local S, NS = nil
 if (minetest.get_modpath("intllib") == nil) then
 	S = minetest.get_translator("castle_gates")
-
 else
-	-- internationalization boilerplate
-	MP = minetest.get_modpath(minetest.get_current_modname())
 	S, NS = dofile(MP.."/intllib.lua")
-
 end
 
 local worldpath = minetest.get_worldpath()
@@ -59,14 +56,16 @@ local switch_map = castle_gates.switch_map
 -- This tracks the ID numbers of any hud waypoints being displayed to players
 local waypoint_huds = {}
 
+-- The particle system gets refreshed every PARTICLE_LIFE seconds, keep this small
+-- so that removed gate nodes lose their particle stream quickly.
 local PARTICLE_LIFE = 1
-local HUD_LIFE = 10
+local HUD_LIFE = 30 -- how long until the display times out
 
 local particle_link = function(player_name, switch_pos, gate_pos)
-	local distance = math.min(vector.distance(switch_pos, gate_pos), 20)
+	local distance = math.min(vector.distance(switch_pos, gate_pos), 20) -- Particle stream extends no more than 20 meters from switch
 	local dir = vector.multiply(vector.direction(switch_pos, gate_pos), distance)
 	minetest.add_particlespawner({
-		amount = 10,
+		amount = 10 * PARTICLE_LIFE,
 		time = PARTICLE_LIFE,
 		minpos = switch_pos,
 		maxpos = switch_pos,
@@ -80,7 +79,7 @@ local particle_link = function(player_name, switch_pos, gate_pos)
 		maxsize = 1,
 		collisiondetection = false,
 		vertical = false,
-		glow = 8,
+		glow = 8, -- Visible in the dark
 		texture = "castle_gates_link_particle.png",
 		playername = player_name,
 	})
@@ -210,7 +209,7 @@ castle_gates.trigger_switch = function(pos, node, clicker, itemstack, pointed_th
 			local target_pos = minetest.get_position_from_hash(target_hash)
 			local target_node = minetest.get_node(target_pos)
 			if target_node.name == "ignore" and player_name then
-				minetest.chat_send_player(player_name, S("Target gate node at @1 was too far away to trigger.",
+				minetest.chat_send_player(player_name, S("Gate node at @1 was in an unloaded region and was not triggered.",
 					minetest.pos_to_string(target_pos)))
 			elseif minetest.get_item_group(target_node.name, "castle_gate") == 0 then
 				table.insert(invalid_gates, target_hash)
@@ -244,8 +243,8 @@ end
 
 local switch_def = {
 	description = S("Gate Switch"),
-	_doc_items_longdesc = nil,
-	_doc_items_usagehelp = nil,
+	_doc_items_longdesc = castle_gates.doc.switch_longdesc,
+	_doc_items_usagehelp = castle_gates.doc.switch_usagehelp,
 	drawtype = "mesh",
 	mesh = "castle_gates_switch.obj",
 	tiles = {"default_wood.png",	--Exterior of switch holder
@@ -306,8 +305,8 @@ minetest.register_node("castle_gates:switch2", switch2_def)
 
 local switch_gate_linkage_def = {
 	description = S("Switch/Gate Linkage"),
-	_doc_items_longdesc = nil,
-	_doc_items_usagehelp = nil,
+	_doc_items_longdesc = castle_gates.doc.linkage_longdesc,
+	_doc_items_usagehelp = castle_gates.doc.linkage_usagehelp,
 	
 	inventory_image = "castle_gates_linkage.png",
 	groups = {tool = 1},

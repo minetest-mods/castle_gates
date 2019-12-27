@@ -1,15 +1,11 @@
-local MP, S, NS = nil
-
+-- internationalization boilerplate
+local MP = minetest.get_modpath(minetest.get_current_modname())
+local S, NS = nil
 if (minetest.get_modpath("intllib") == nil) then
 	S = minetest.get_translator("castle_gates")
-
 else
-	-- internationalization boilerplate
-	MP = minetest.get_modpath(minetest.get_current_modname())
 	S, NS = dofile(MP.."/intllib.lua")
-
 end
-
 
 -- copied from castle_masonry in case that mod is not loaded
 local get_material_properties = function(material)

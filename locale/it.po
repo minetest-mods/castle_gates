@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Castle Gates\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-04-14 22:15-0600\n"
+"POT-Creation-Date: 2019-12-27 15:48-0700\n"
 "PO-Revision-Date: 2019-11-11 23:23+0100\n"
 "Last-Translator: Hamlet <54187342+h4ml3t@users.noreply.github.com>\n"
 "Language-Team: \n"
@@ -18,13 +18,13 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 2.2.1\n"
 
-#: doc.lua:11
+#: doc.lua:16
 msgid "Heavy wooden bars designed to prevent entry even to siege equipment."
 msgstr ""
 "Pesanti sbarre di legno progettate per impedire l'accesso perfino "
 "all'equipaggiamento da assedio."
 
-#: doc.lua:12
+#: doc.lua:17
 msgid ""
 "Place these bars in a structure together and they will slide as a unified "
 "gate when clicked on."
@@ -32,7 +32,7 @@ msgstr ""
 "Componete una struttura mettendo insieme queste sbarre ed esse scorreranno "
 "come un'unica saracinesca quando ci si cliccherà sopra."
 
-#: doc.lua:14
+#: doc.lua:19
 msgid ""
 "The bottom edge of a portcullis gate, with knobs to lock securely into the "
 "floor."
@@ -40,7 +40,7 @@ msgstr ""
 "La parte inferiore di una saracinesca, con puntali per bloccarsi saldamente "
 "nel pavimento."
 
-#: doc.lua:15
+#: doc.lua:20
 msgid ""
 "This block can be used to define the edge of a portcullius that meets up "
 "with another gate, should you have an arrangement like that. Otherwise it's "
@@ -50,11 +50,11 @@ msgstr ""
 "che si incontra con un'altra, se doveste avere una tale disposizione. "
 "Altrimenti è solo decorativo."
 
-#: doc.lua:17
+#: doc.lua:22
 msgid "A basic gate panel."
 msgstr "Un pannello di base per cancelli, porte e portoni."
 
-#: doc.lua:18
+#: doc.lua:23
 msgid ""
 "This gate segment will move in unison with adjoining gate segments when "
 "right-clicked."
@@ -62,12 +62,12 @@ msgstr ""
 "Questo segmento si muoverà all'unisono con altri segmenti adiacenti quando "
 "cliccato col tasto destro."
 
-#: doc.lua:20
+#: doc.lua:25
 msgid "A gate panel with a defined edge."
 msgstr ""
 "Un pannello per cancelli, porte e portoni avente un'estremità definita."
 
-#: doc.lua:21
+#: doc.lua:26
 msgid ""
 "The darkened edge of this panel marks the edge of the gate it's a part of. "
 "You can use these when building double doors to ensure the two parts swing "
@@ -80,11 +80,11 @@ msgstr ""
 "noti che queste estremità non sono strettamente necessarie per cancelli, "
 "porte e portoni a battente singolo."
 
-#: doc.lua:23
+#: doc.lua:28
 msgid "A gate edge with a handle."
 msgstr "Una estremità di cancello, porta o portone con una maniglia."
 
-#: doc.lua:24
+#: doc.lua:29
 msgid ""
 "The handle is basically decorative, a door this size can be swung by "
 "clicking anywhere on it. But the darkened edge of this panel is useful for "
@@ -95,13 +95,13 @@ msgstr ""
 "il bordo annerito di questo pannello è utile per stabilire la fine di un "
 "battente quando confina con un altro."
 
-#: doc.lua:26
+#: doc.lua:31
 msgid "A hinged gate segment that allows a gate to swing."
 msgstr ""
 "Un segmento di cancello, porta o portone provvisto di un cardine che ne "
 "consente la rotazione."
 
-#: doc.lua:27
+#: doc.lua:32
 msgid ""
 "If you have more than one hinge in your gate, make sure the hinges line up "
 "correctly otherwise the gate will not be able to swing. The hinge is the "
@@ -111,13 +111,13 @@ msgstr ""
 "che siano allineati correttamente altrimenti non potrà ruotare. Il cardine è "
 "la protuberanza lungo il bordo del pannello."
 
-#: doc.lua:29
+#: doc.lua:34
 msgid "A block with a slot to allow an adjacent sliding gate through."
 msgstr ""
 "Un blocco provvisto di una fessura per consentire a una porta scorrevole di "
 "scivolarci attraverso."
 
-#: doc.lua:30
+#: doc.lua:35
 msgid ""
 "This block is designed to extend into a neighboring node that a sliding gate "
 "passes through, to provide a tight seal for the gate to move through without "
@@ -128,7 +128,7 @@ msgstr ""
 "saracinesca che gli passa attraverso senza permettere a niente altro di "
 "intrufolarvisi."
 
-#: doc.lua:32
+#: doc.lua:37
 msgid ""
 "A block that extends into an adjacent node to provide a tight seal for a "
 "large gate."
@@ -136,7 +136,7 @@ msgstr ""
 "Un blocco che si estende in un nodo adiacente per fornire una chiusura "
 "ermetica per un portone."
 
-#: doc.lua:33
+#: doc.lua:38
 msgid ""
 "Two nodes cannot occupy the same space, but this block extends into a "
 "neighboring node's space to allow for gates to form a tight seal. It can be "
@@ -147,11 +147,35 @@ msgstr ""
 "saracinesche di formare una chiusura ermetica. Può essere usato con porte "
 "scorrevoli o a rotazione."
 
-#: doc.lua:37
+#: doc.lua:40
+msgid ""
+"A lever that can be connected to one or more gates, allowing them to be "
+"triggered remotely"
+msgstr ""
+
+#: doc.lua:41
+msgid ""
+"Craft a gate linkage tool to configure which gates any given switch is "
+"connected to."
+msgstr ""
+
+#: doc.lua:43
+msgid ""
+"This tool is used to establish linkages between gates and the switches that "
+"operate them."
+msgstr ""
+
+#: doc.lua:44
+msgid ""
+"Click on a switch to pair the linkage tool to that switch, then click on "
+"gates to establish the link to it."
+msgstr ""
+
+#: doc.lua:48
 msgid "Gates"
 msgstr "Cancelli, porte, portoni e saracinesche"
 
-#: doc.lua:38
+#: doc.lua:49
 msgid ""
 "Gates are large multi-node constructions that swing on hinges or slide out "
 "of the way when triggered."
@@ -159,11 +183,11 @@ msgstr ""
 "Cancelli, porte, portoni e saracinesche sono costruzioni multi-nodo che "
 "quando vengono attivate ruotano su dei cardini o scivolano via."
 
-#: doc.lua:43
+#: doc.lua:54
 msgid "Gate construction"
 msgstr "Costruzione di cancelli, porte, portoni e saracinesche"
 
-#: doc.lua:45
+#: doc.lua:56
 msgid ""
 "Gates are multi-node constructions, usually (though not always) consisting "
 "of multiple node types that fit together into a unified whole. The "
@@ -224,59 +248,137 @@ msgstr ""
 "presenza di ostacoli nella zona in cui ruota e non ruoterà se c'è qualcosa "
 "di mezzo."
 
-#: doors.lua:8
+#: doc.lua:65
+msgid ""
+"Gate switches can be used to trigger one or more gates remotely. To "
+"establish a link between a gate and a switch you will need to craft a "
+"\"Linkage\" tool, then click on the switch and the target gate with it.\n"
+"\n"
+"When you click on a switch with the linkage tool the linkage tool records "
+"the switch. Any gate block you click on with that linkage tool subsequently "
+"will be linked to that switch. Clicking on a gate a second time will remove "
+"the linkage. If you click on a new switch the linkage tool will subsequently "
+"connect gates to that switch instead. Whenever you click on something with "
+"the linkage tool your HUD will show the location of its currently recorded "
+"switch and any gates that that switch is connected to.\n"
+"\n"
+"Once a switch is linked up to a gate, triggering the switch will have the "
+"same effect as if you had manually triggered the gate. If the gate is "
+"located in a region of the map that hasn't been loaded you'll be notified "
+"that the gate failed to trigger."
+msgstr ""
+
+#: doc.lua:73
+msgid ""
+"\n"
+"\n"
+"Mesecons can be used to trigger a switch. Note that the switch will be "
+"triggered when the mesecon signal goes on, but not when the signal goes off."
+msgstr ""
+
+#: doc.lua:77
+#, fuzzy
+msgid "Gate switches"
+msgstr "Alloggio di @1 per cancelli, porte, portoni e saracinesche"
+
+#: doors.lua:13
 msgid "Oak Door"
 msgstr "Porta di quercia"
 
-#: doors.lua:37
+#: doors.lua:42
 msgid "Jail Door"
 msgstr "Porta della prigione"
 
-#: doors.lua:54
+#: doors.lua:59
 msgid "Jail Bars"
 msgstr "Sbarre della prigione"
 
-#: gates.lua:23
+#: gates.lua:28
 msgid "@1 Portcullis Bars"
 msgstr "Sbarre della saracinesca di @1"
 
-#: gates.lua:53
+#: gates.lua:58
 msgid "@1 Portcullis Bottom"
 msgstr "Estremità inferiore della saracinesca di @1"
 
-#: gates.lua:113
+#: gates.lua:118
 msgid "@1 Gate Door"
 msgstr "Porta di @1 del cancello"
 
-#: gates.lua:145
+#: gates.lua:150
 msgid "@1 Gate Door Edge"
 msgstr "Estremità della porta di @1 del cancello"
 
-#: gates.lua:184
+#: gates.lua:189
 msgid "@1 Gate Door With Handle"
 msgstr "Porta di @1 con maniglia del cancello"
 
-#: gates.lua:227
+#: gates.lua:232
 msgid "@1 Gate Door With Hinge"
 msgstr "Porta di @1 con cardine del cancello"
 
-#: gates.lua:256
+#: gates.lua:261
 msgid "Wooden"
 msgstr "legno"
 
-#: gates.lua:268
+#: gates.lua:273
 msgid "Steel"
 msgstr "acciaio"
 
-#: gate_slots.lua:36
+#: gate_slots.lua:41
 msgid "Stonebrick"
 msgstr "mattone di pietra"
 
-#: gate_slots.lua:45
+#: gate_slots.lua:50
 msgid "@1 Gate Slot"
 msgstr "Alloggio di @1 per cancelli, porte, portoni e saracinesche"
 
-#: gate_slots.lua:70
+#: gate_slots.lua:75
 msgid "@1 Gate Slot Reverse"
 msgstr ""
 "Rovescio dell'alloggio di @1 per cancelli, porte, portoni e saracinesche"
+
+#: switch.lua:121
+msgid "Target Gate"
+msgstr ""
+
+#: switch.lua:130
+msgid "Source Switch"
+msgstr ""
+
+#: switch.lua:212
+msgid "Gate node at @1 was in an unloaded region and was not triggered."
+msgstr ""
+
+#: switch.lua:230
+msgid "Gate triggered"
+msgstr ""
+
+#: switch.lua:234
+msgid "Switch not connected to a gate"
+msgstr ""
+
+#: switch.lua:245
+#, fuzzy
+msgid "Gate Switch"
+msgstr "Alloggio di @1 per cancelli, porte, portoni e saracinesche"
+
+#: switch.lua:307
+msgid "Switch/Gate Linkage"
+msgstr ""
+
+#: switch.lua:349
+msgid "Gate linkage to switch at @1"
+msgstr ""
+
+#: switch.lua:350
+msgid "Switch linkage target updated to @1"
+msgstr ""
+
+#: switch.lua:366
+msgid "Removing link from @1"
+msgstr ""
+
+#: switch.lua:384
+msgid "Added a link from a switch at @1 to a gate at @2"
+msgstr ""
