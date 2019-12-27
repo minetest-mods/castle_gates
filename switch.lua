@@ -53,8 +53,122 @@ local switch_map = castle_gates.switch_map
 -- using this multimap.
 
 
+------------------------------------------------------------------------------------
+-- User interface
+
 -- This tracks the ID numbers of any hud waypoints being displayed to players
 local waypoint_huds = {}
+
+local PARTICLE_LIFE = 1
+local HUD_LIFE = 10
+
+local particle_link = function(player_name, switch_pos, gate_pos)
+	local distance = math.min(vector.distance(switch_pos, gate_pos), 20)
+	local dir = vector.multiply(vector.direction(switch_pos, gate_pos), distance)
+	minetest.add_particlespawner({
+		amount = 10,
+		time = PARTICLE_LIFE,
+		minpos = switch_pos,
+		maxpos = switch_pos,
+		minvel = dir,
+		maxvel = dir,
+		minacc = {x=0, y=0, z=0},
+		maxacc = {x=0, y=0, z=0},
+		minexptime = 1,
+		maxexptime = 1,
+		minsize = 1,
+		maxsize = 1,
+		collisiondetection = false,
+		vertical = false,
+		glow = 8,
+		texture = "castle_gates_link_particle.png",
+		playername = player_name,
+	})
+end
+
+local update_switch_targets = function(player, switch_hash)
+	local player_name = player:get_player_name()
+	
+	-- First, remove any existing waypoints
+	local player_context = waypoint_huds[player_name]		
+	if player_context then
+		for _, hud_id in pairs(player_context.hud_ids) do
+			player:hud_remove(hud_id)
+		end
+		if player_context.switch_hud_id ~= nil then
+			player:hud_remove(player_context.switch_hud_id)
+		end
+		waypoint_huds[player_name] = nil
+	end
+	
+	-- If nil was provided as a parameter, we're done.
+	if switch_hash == nil then
+		return
+	end
+	
+	-- If switch_hash gives us valid targets, show them
+	local gates = switch_map[switch_hash] or {}
+	local switch_pos = minetest.get_position_from_hash(switch_hash)
+	local player_huds = {}
+	player_huds.hud_lifetime = 0 -- allows the display to time out
+	player_huds.particle_lifetime = 0
+	player_huds.switch_pos = switch_pos
+	player_huds.hud_ids = {}
+	waypoint_huds[player_name] = player_huds
+	for gate_hash, _ in pairs(gates) do
+		local gate_pos = minetest.get_position_from_hash(gate_hash)
+		local hud_id = player:hud_add({
+			hud_elem_type = "waypoint",
+			name = S("Target Gate"),
+			--text = "<text>",-- distance suffix, can be blank
+			number = 0xFFFFFF,
+			world_pos = gate_pos})
+		player_huds.hud_ids[gate_hash] = hud_id
+		particle_link(player_name, switch_pos, gate_pos)
+	end
+	player_huds.switch_hud_id = player:hud_add({
+		hud_elem_type = "waypoint",
+		name = S("Source Switch"),
+		--text = "<text>",-- distance suffix, can be blank
+		number = 0xFFFF00,
+		world_pos = switch_pos})
+end
+
+-- For refreshing particles and expiring huds
+minetest.register_globalstep(function(dtime)
+	local expiring_huds = {}
+	for player_name, context in pairs (waypoint_huds) do
+		context.hud_lifetime = context.hud_lifetime + dtime
+		if context.hud_lifetime > HUD_LIFE then
+			table.insert(expiring_huds, player_name)
+		else
+			context.particle_lifetime = context.particle_lifetime + dtime
+			if context.particle_lifetime > PARTICLE_LIFE then
+				context.particle_lifetime = 0
+				for gate_hash, _ in pairs(context.hud_ids) do
+					particle_link(player_name, context.switch_pos, minetest.get_position_from_hash(gate_hash))
+				end
+			end
+		end
+	end
+	for _, player_name in ipairs(expiring_huds) do
+		local player = minetest.get_player_by_name(player_name)
+		if player then
+			update_switch_targets(player, nil)
+		end
+	end
+end)
+
+-- Remove any hud stuff when a player dies or leaves
+minetest.register_on_dieplayer(function(objectref, reason)
+	update_switch_targets(objectref, nil)
+end)
+minetest.register_on_leaveplayer(function(objectref, timed_out)
+	local player_name = objectref:get_player_name()
+	waypoint_huds[player_name] = nil
+end)
+
+--------------------------------------------------------------------------------------
 
 local remove_switch_hash = function(invalid_target)
 	local switches = switch_map[invalid_target]
@@ -72,16 +186,6 @@ local remove_switch_hash = function(invalid_target)
 	end
 end
 
--- Was used to rotate the switch, but decided to just bite the bullet and use a second model instead
---local param2_swap =
---{
---	[0] = 2, [1] = 3, [2] = 0, [3] = 1,
---	[4] = 6, [6] = 4, [7] = 5, [5] = 7,
---	[8] = 10, [10] = 8, [11] = 9, [9] = 11,
---	[12] = 14, [14] = 12, [13] = 15, [15] = 13,
---	[16] = 18, [18] = 16, [17] = 19, [19] = 17,
---	[20] = 22, [22] = 20, [21] = 23, [23] = 21
---}
 local swap_switch = function(pos, node)
 	if node.name == "castle_gates:switch" then
 		node.name = "castle_gates:switch2"
@@ -105,7 +209,10 @@ castle_gates.trigger_switch = function(pos, node, clicker, itemstack, pointed_th
 		for target_hash, _ in pairs(targets) do
 			local target_pos = minetest.get_position_from_hash(target_hash)
 			local target_node = minetest.get_node(target_pos)
-			if minetest.get_item_group(target_node.name, "castle_gate") == 0 then
+			if target_node.name == "ignore" and player_name then
+				minetest.chat_send_player(player_name, S("Target gate node at @1 was too far away to trigger.",
+					minetest.pos_to_string(target_pos)))
+			elseif minetest.get_item_group(target_node.name, "castle_gate") == 0 then
 				table.insert(invalid_gates, target_hash)
 			else
 				castle_gates.trigger_gate(target_pos, target_node, clicker)
@@ -206,7 +313,7 @@ local switch_gate_linkage_def = {
 	groups = {tool = 1},
 	on_use = function(itemstack, user, pointed_thing)	
 		if pointed_thing.type ~="node" then
-			return itemstack
+			return
 		end
 		local pointed_pos = pointed_thing.under
 		local pointed_node = minetest.get_node(pointed_pos)
@@ -214,44 +321,43 @@ local switch_gate_linkage_def = {
 		local pointed_gate_group = minetest.get_item_group(pointed_node_name, "castle_gate")
 		local pointed_switch_group = minetest.get_item_group(pointed_node_name, "castle_gate_switch")
 	
+		-- If there's a recorded switch position, load that from the tool's meta
 		local meta = itemstack:get_meta()
+		local switch_hash = nil
 		local switch_pos = meta:get("switch")
-		local gate_pos = meta:get("gate")
 		if switch_pos then
 			switch_pos = minetest.string_to_pos(switch_pos)
-		end
-		if gate_pos then
-			gate_pos = minetest.string_to_pos(gate_pos)
+			switch_hash = minetest.hash_node_position(switch_pos)
 		end
 		
+		-- Sanity check
 		if pointed_gate_group > 0 and pointed_switch_group > 0 then
 			minetest.log("error", "[castle_gates] the node " .. pointed_node_name
 				.. " belongs to both castle_gate and castle_gate_switch groups, this is invalid.")
-			return itemstack
+			return
 		end
 		
 		local player_name = user:get_player_name()
-		local add_link = false
-		if pointed_gate_group > 0 then
-			if not gate_pos or not vector.equals(gate_pos, pointed_pos) then
-				gate_pos = pointed_pos
-				meta:set_string("gate", minetest.pos_to_string(gate_pos))
-				minetest.chat_send_player(player_name, S("Gate linkage target updated to @1", minetest.pos_to_string(gate_pos)))
-			end
-			add_link = true
-		end
+		
+		-- If we clicked on a switch
 		if pointed_switch_group > 0 then
+			-- if either we've never clicked on a switch before or this is a new switch
 			if not switch_pos or not vector.equals(switch_pos, pointed_pos) then
+				-- update the linkage's stored switch
 				switch_pos = pointed_pos
+				switch_hash = minetest.hash_node_position(switch_pos)
 				meta:set_string("switch", minetest.pos_to_string(switch_pos))
+				meta:set_string("description", S("Gate linkage to switch at @1", minetest.pos_to_string(switch_pos)))
 				minetest.chat_send_player(player_name, S("Switch linkage target updated to @1", minetest.pos_to_string(switch_pos)))
 			end
-			add_link = true
+			update_switch_targets(user, switch_hash)
+			return itemstack
 		end
 		
-		if add_link and gate_pos and switch_pos then
+		-- If we clicked on a gate and we have a switch
+		if switch_pos and pointed_gate_group > 0 then
+			local gate_pos = pointed_pos
 			local gate_hash = minetest.hash_node_position(gate_pos)
-			local switch_hash = minetest.hash_node_position(switch_pos)
 
 			local gate_links = switch_map[gate_hash] or {}
 			local switch_links = switch_map[switch_hash] or {}
@@ -260,26 +366,18 @@ local switch_gate_linkage_def = {
 				-- link already exists, remove it
 				minetest.chat_send_player(player_name, S("Removing link from @1", minetest.pos_to_string(gate_pos)))
 				remove_switch_hash(gate_hash)
-				local waypoint_huds_for_player = waypoint_huds[player_name]
-				if waypoint_huds_for_player then
-					local hud_id = waypoint_huds_for_player[gate_hash]
-					if hud_id then
-						user:hud_remove(hud_id)
-						waypoint_huds_for_player[gate_hash] = nil
-						if next(waypoint_huds_for_player) == nil then
-							waypoint_huds[player_name] = nil
-						end
-					end
-				end
-				return itemstack
+				update_switch_targets(user, switch_hash)
+				return
 			end
 
+			-- link doesn't exist, create it
 			gate_links[switch_hash] = true
 			switch_links[gate_hash] = true
 
 			switch_map[gate_hash] = gate_links
 			switch_map[switch_hash] = switch_links
 			
+			update_switch_targets(user, switch_hash)
 			castle_gates.save_switch_data()
 			
 			minetest.log("action", player_name .. " added a link from a switch at "
@@ -289,72 +387,13 @@ local switch_gate_linkage_def = {
 			if not (creative and creative.is_enabled_for and creative.is_enabled_for(player_name)) then
 				itemstack:add_wear(65535 / ((uses or 200) - 1))
 			end
-		end
-		
-		return itemstack
-	end,
-
-	on_place = function(itemstack, user, pointed_thing)
-		local player_name = user:get_player_name()
-	
-		if waypoint_huds[player_name] then
-			for _, hud_id in pairs(waypoint_huds[player_name]) do
-				user:hud_remove(hud_id)
-			end
-			waypoint_huds[player_name] = nil
 			return itemstack
 		end
-	
-		if pointed_thing.type == "node" then
-			local pointed_pos = pointed_thing.under
-			local pointed_node = minetest.get_node(pointed_thing.under)
-			if minetest.get_item_group(pointed_node.name, "castle_gate_switch") > 0 then
-				local pointed_hash = minetest.hash_node_position(pointed_pos)
-				local gates = switch_map[pointed_hash]
-				if gates then
-					local player_huds = waypoint_huds[player_name] or {}
-					waypoint_huds[player_name] = player_huds
-					for gate_hash, _ in pairs(gates) do
-						local gate_pos = minetest.get_position_from_hash(gate_hash)
-						local hud_id = user:hud_add({
-							hud_elem_type = "waypoint",
-							name = S("Switch Target"),
-							--text = "<text>",-- distance suffix, can be blank
-							number = 0xFFFFFF,
-							world_pos = gate_pos})
-						player_huds[gate_hash] = hud_id
-						
-						local distance = vector.distance(pointed_pos, gate_pos)
-						local dir = vector.multiply(vector.direction(pointed_pos, gate_pos), distance)
-						minetest.add_particlespawner({
-							amount = 100,
-							time = 10,
-							minpos = pointed_pos,
-							maxpos = pointed_pos,
-							minvel = dir,
-							maxvel = dir,
-							minacc = {x=0, y=0, z=0},
-							maxacc = {x=0, y=0, z=0},
-							minexptime = 1,
-							maxexptime = 1,
-							minsize = 1,
-							maxsize = 1,
-							collisiondetection = false,
-							vertical = false,
-							texture = "castle_gates_link_particle.png",
-							playername = player_name,
-						})
-					end
-				end
-				return itemstack
-			end
-		end
-	
-		local meta = itemstack:get_meta()
-		meta:set_string("switch", "")
-		meta:set_string("gate", "")
-		minetest.chat_send_player(user:get_player_name(), S("Cleared switch and gate targets"))
-		return itemstack
+
+		-- Clicked on anything else
+		if switch_pos then
+			update_switch_targets(user, switch_hash)
+		end		
 	end,
 }
 
@@ -405,19 +444,3 @@ minetest.register_craft({
 		{"default:steel_ingot","castle_gates:linkage","default:steel_ingot"},
 	}
 })
-
--- Remove any hud stuff when a player dies or leaves
-minetest.register_on_dieplayer(function(objectref, reason)
-	local player_name = objectref:get_player_name()
-	local player_hud_ids = waypoint_huds[player_name]
-	if player_hud_ids then
-		for _, hud_id in pairs(player_hud_ids) do
-			objectref:hud_remove(hud_id)
-		end
-		waypoint_huds[player_name] = nil
-	end
-end)
-minetest.register_on_leaveplayer(function(objectref, timed_out)
-	local player_name = objectref:get_player_name()
-	waypoint_huds[player_name] = nil
-end)
