@@ -44,6 +44,8 @@ load_switch_data()
 
 local switch_map = castle_gates.switch_map
 
+local waypoint_huds = {}
+
 local remove_switch_hash = function(invalid_target)
 	local switches = switch_map[invalid_target]
 	if switches then
@@ -80,7 +82,7 @@ local swap_switch = function(pos, node)
 	end
 end
 
-local switch_on_rightclick = function(pos, node, clicker, itemstack, pointed_thing)
+castle_gates.trigger_switch = function(pos, node, clicker, itemstack, pointed_thing)
 	local player_name
 	if clicker then
 		player_name = clicker:get_player_name()
@@ -119,6 +121,11 @@ local switch_on_rightclick = function(pos, node, clicker, itemstack, pointed_thi
 	end
 end
 
+castle_gates.clear_switch = function(pos)
+	local switch_hash = minetest.hash_node_position(pos)
+	remove_switch_hash(switch_hash)
+end
+
 local switch_def = {
 	description = S("Gate Switch"),
 	_doc_items_longdesc = nil,
@@ -150,18 +157,15 @@ local switch_def = {
 	},
 	drops = "castle_gates:switch",
 	is_ground_content = false,
-	on_rightclick = switch_on_rightclick,
-	on_destruct = function(pos)
-		local switch_hash = minetest.hash_node_position(pos)
-		remove_switch_hash(switch_hash)
-	end,
+	on_rightclick = castle_gates.trigger_switch,
+	on_destruct = castle_gates.clear_switch,
 }
 
 if minetest.get_modpath("mesecons") then
 	switch_def.mesecons = {
 		effector = {
 			action_on = function(pos, node)
-				switch_on_rightclick(pos, node)
+				castle_gates.trigger_switch(pos, node)
 			end,
 		}
 	}
@@ -223,7 +227,7 @@ local switch_gate_linkage_def = {
 			if not gate_pos or not vector.equals(gate_pos, pointed_pos) then
 				gate_pos = pointed_pos
 				meta:set_string("gate", minetest.pos_to_string(gate_pos))
-				minetest.chat_send_player(player_name, "Gate linkage target updated to " .. minetest.pos_to_string(gate_pos))
+				minetest.chat_send_player(player_name, S("Gate linkage target updated to @1", minetest.pos_to_string(gate_pos)))
 			end
 			add_link = true
 		end
@@ -231,7 +235,7 @@ local switch_gate_linkage_def = {
 			if not switch_pos or not vector.equals(switch_pos, pointed_pos) then
 				switch_pos = pointed_pos
 				meta:set_string("switch", minetest.pos_to_string(switch_pos))
-				minetest.chat_send_player(player_name, "Switch linkage target updated to " .. minetest.pos_to_string(switch_pos))
+				minetest.chat_send_player(player_name, S("Switch linkage target updated to @1", minetest.pos_to_string(switch_pos)))
 			end
 			add_link = true
 		end
@@ -244,8 +248,20 @@ local switch_gate_linkage_def = {
 			local switch_links = switch_map[switch_hash] or {}
 
 			if gate_links[switch_hash] and switch_links[gate_hash] then
-				-- link already exists
-				minetest.chat_send_player(player_name, "Link already exists")
+				-- link already exists, remove it
+				minetest.chat_send_player(player_name, S("Removing link from @1", minetest.pos_to_string(gate_pos)))
+				remove_switch_hash(gate_hash)
+				local waypoint_huds_for_player = waypoint_huds[player_name]
+				if waypoint_huds_for_player then
+					local hud_id = waypoint_huds_for_player[gate_hash]
+					if hud_id then
+						user:hud_remove(hud_id)
+						waypoint_huds_for_player[gate_hash] = nil
+						if next(waypoint_huds_for_player) == nil then
+							waypoint_huds[player_name] = nil
+						end
+					end
+				end
 				return itemstack
 			end
 
@@ -259,8 +275,8 @@ local switch_gate_linkage_def = {
 			
 			minetest.log("action", player_name .. " added a link from a switch at "
 				.. minetest.pos_to_string(switch_pos) .. " to a gate at " .. minetest.pos_to_string(gate_pos))
-			minetest.chat_send_player(player_name, "Added a link from a switch at "
-				.. minetest.pos_to_string(switch_pos) .. " to a gate at " .. minetest.pos_to_string(gate_pos))
+			minetest.chat_send_player(player_name, S("Added a link from a switch at @1 to a gate at @2",
+				minetest.pos_to_string(switch_pos), minetest.pos_to_string(gate_pos)))
 			if not (creative and creative.is_enabled_for and creative.is_enabled_for(player_name)) then
 				itemstack:add_wear(65535 / ((uses or 200) - 1))
 			end
@@ -270,10 +286,44 @@ local switch_gate_linkage_def = {
 	end,
 
 	on_place = function(itemstack, user, pointed_thing)
+		local player_name = user:get_player_name()
+	
+		if waypoint_huds[player_name] then
+			for _, hud_id in pairs(waypoint_huds[player_name]) do
+				user:hud_remove(hud_id)
+			end
+			waypoint_huds[player_name] = nil
+			return itemstack
+		end
+	
+		if pointed_thing.type == "node" then
+			local pointed_pos = pointed_thing.under
+			local pointed_node = minetest.get_node(pointed_thing.under)
+			if minetest.get_item_group(pointed_node.name, "castle_gate_switch") > 0 then
+				local pointed_hash = minetest.hash_node_position(pointed_pos)
+				local gates = switch_map[pointed_hash]
+				if gates then
+					local player_huds = waypoint_huds[player_name] or {}
+					waypoint_huds[player_name] = player_huds
+					for gate_hash, _ in pairs(gates) do
+						local gate_pos = minetest.get_position_from_hash(gate_hash)
+						local hud_id = user:hud_add({
+							hud_elem_type = "waypoint",
+							name = S("Switch Target"),
+							--text = "<text>",-- distance suffix, can be blank
+							number = 0xFFFFFF,
+							world_pos = gate_pos})
+						player_huds[gate_hash] = hud_id
+					end
+				end
+				return itemstack
+			end
+		end
+	
 		local meta = itemstack:get_meta()
 		meta:set_string("switch", "")
 		meta:set_string("gate", "")
-		minetest.chat_send_player(user:get_player_name(), "Cleared switch and gate targets")
+		minetest.chat_send_player(user:get_player_name(), S("Cleared switch and gate targets"))
 		return itemstack
 	end,
 }
