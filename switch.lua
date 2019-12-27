@@ -43,7 +43,17 @@ end
 load_switch_data()
 
 local switch_map = castle_gates.switch_map
+-- The switch map is a bi-directional multimap linking world positions (in the form of hashes) to other world positions. So for example:
+--{
+--	[gate_node_1_hash] = {[switch_node_1_hash] = true, [switch_node_2_hash] = true},
+--	[switch_node_1_hash] = {[gate_node_1_hash] = true},
+--	[switch_node_2_hash] = {[gate_node_1_hash] = true},
+--}
+-- This would record that switches 1 and 2 are linked to gate node 1. You can navigate from one end of the link to the other efficiently
+-- using this multimap.
 
+
+-- This tracks the ID numbers of any hud waypoints being displayed to players
 local waypoint_huds = {}
 
 local remove_switch_hash = function(invalid_target)
@@ -109,14 +119,13 @@ castle_gates.trigger_switch = function(pos, node, clicker, itemstack, pointed_th
 		-- and then remove the invalid gate targets themselves
 		for _, invalid_target in ipairs(invalid_gates) do
 			remove_switch_hash(invalid_target)
-			minetest.chat_send_all("removing invalid gate target from switch")
 		end
 		if player_name then
-			minetest.chat_send_player(player_name, "Gate triggered")
+			minetest.chat_send_player(player_name, S("Gate triggered"))
 		end
 	else
 		if player_name then
-			minetest.chat_send_player(player_name, "Switch not connected to a gate")			
+			minetest.chat_send_player(player_name, S("Switch not connected to a gate"))
 		end
 	end
 end
@@ -314,6 +323,27 @@ local switch_gate_linkage_def = {
 							number = 0xFFFFFF,
 							world_pos = gate_pos})
 						player_huds[gate_hash] = hud_id
+						
+						local distance = vector.distance(pointed_pos, gate_pos)
+						local dir = vector.multiply(vector.direction(pointed_pos, gate_pos), distance)
+						minetest.add_particlespawner({
+							amount = 100,
+							time = 10,
+							minpos = pointed_pos,
+							maxpos = pointed_pos,
+							minvel = dir,
+							maxvel = dir,
+							minacc = {x=0, y=0, z=0},
+							maxacc = {x=0, y=0, z=0},
+							minexptime = 1,
+							maxexptime = 1,
+							minsize = 1,
+							maxsize = 1,
+							collisiondetection = false,
+							vertical = false,
+							texture = "castle_gates_link_particle.png",
+							playername = player_name,
+						})
 					end
 				end
 				return itemstack
