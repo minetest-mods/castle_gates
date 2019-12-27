@@ -241,6 +241,15 @@ castle_gates.clear_switch = function(pos)
 	remove_switch_hash(switch_hash)
 end
 
+local trigger_switch = function(pos, node)
+	minetest.sound_play("castle_gates_switch", {
+		pos = pos,
+		gain = 1.0,
+		max_hear_distance = 32,
+	})
+	castle_gates.trigger_switch(pos, node)
+end
+
 local switch_def = {
 	description = S("Gate Switch"),
 	_doc_items_longdesc = castle_gates.doc.switch_longdesc,
@@ -272,16 +281,14 @@ local switch_def = {
 	},
 	drops = "castle_gates:switch",
 	is_ground_content = false,
-	on_rightclick = castle_gates.trigger_switch,
+	on_rightclick = trigger_switch,
 	on_destruct = castle_gates.clear_switch,
 }
 
 if minetest.get_modpath("mesecons") then
 	switch_def.mesecons = {
 		effector = {
-			action_on = function(pos, node)
-				castle_gates.trigger_switch(pos, node)
-			end,
+			action_on = trigger_switch,
 		}
 	}
 end
@@ -365,6 +372,11 @@ local switch_gate_linkage_def = {
 				-- link already exists, remove it
 				minetest.chat_send_player(player_name, S("Removing link from @1", minetest.pos_to_string(gate_pos)))
 				remove_switch_hash(gate_hash)
+				minetest.sound_play("castle_gates_linkage", {
+					pos = pos,
+					gain = 1.0,
+					max_hear_distance = 32,
+				})
 				update_switch_targets(user, switch_hash)
 				return
 			end
@@ -376,6 +388,11 @@ local switch_gate_linkage_def = {
 			switch_map[gate_hash] = gate_links
 			switch_map[switch_hash] = switch_links
 			
+			minetest.sound_play("castle_gates_linkage", {
+				pos = pos,
+				gain = 1.0,
+				max_hear_distance = 32,
+			})
 			update_switch_targets(user, switch_hash)
 			castle_gates.save_switch_data()
 			
