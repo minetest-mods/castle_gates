@@ -87,7 +87,7 @@ end
 
 local update_switch_targets = function(player, switch_hash)
 	local player_name = player:get_player_name()
-	
+
 	-- First, remove any existing waypoints
 	local player_context = waypoint_huds[player_name]		
 	if player_context then
@@ -104,7 +104,7 @@ local update_switch_targets = function(player, switch_hash)
 	if switch_hash == nil then
 		return
 	end
-	
+
 	-- If switch_hash gives us valid targets, show them
 	local gates = switch_map[switch_hash] or {}
 	local switch_pos = minetest.get_position_from_hash(switch_hash)
@@ -199,6 +199,7 @@ castle_gates.trigger_switch = function(pos, node, clicker, itemstack, pointed_th
 	local player_name
 	if clicker then
 		player_name = clicker:get_player_name()
+		update_switch_targets(clicker, nil) -- If there are any linkage UI elements on display, get rid of them.
 	end
 	local switch_hash = minetest.hash_node_position(pos)
 	local targets = switch_map[switch_hash]
@@ -212,7 +213,7 @@ castle_gates.trigger_switch = function(pos, node, clicker, itemstack, pointed_th
 				minetest.chat_send_player(player_name, S("Gate node at @1 was in an unloaded region and was not triggered.",
 					minetest.pos_to_string(target_pos)))
 			elseif minetest.get_item_group(target_node.name, "castle_gate") == 0 then
-				table.insert(invalid_gates, target_hash)
+				table.insert(invalid_gates, target_hash) -- clean removed gate segments out of the switch map
 			else
 				castle_gates.trigger_gate(target_pos, target_node, clicker)
 				triggered = true
@@ -241,13 +242,13 @@ castle_gates.clear_switch = function(pos)
 	remove_switch_hash(switch_hash)
 end
 
-local trigger_switch = function(pos, node)
+local trigger_switch = function(pos, node, clicker)
 	minetest.sound_play("castle_gates_switch", {
 		pos = pos,
 		gain = 1.0,
 		max_hear_distance = 32,
 	})
-	castle_gates.trigger_switch(pos, node)
+	castle_gates.trigger_switch(pos, node, clicker)
 end
 
 local switch_def = {
@@ -373,7 +374,7 @@ local switch_gate_linkage_def = {
 				minetest.chat_send_player(player_name, S("Removing link from @1", minetest.pos_to_string(gate_pos)))
 				remove_switch_hash(gate_hash)
 				minetest.sound_play("castle_gates_linkage", {
-					pos = pos,
+					pos = pointed_pos,
 					gain = 1.0,
 					max_hear_distance = 32,
 				})
@@ -389,7 +390,7 @@ local switch_gate_linkage_def = {
 			switch_map[switch_hash] = switch_links
 			
 			minetest.sound_play("castle_gates_linkage", {
-				pos = pos,
+				pos = pointed_pos,
 				gain = 1.0,
 				max_hear_distance = 32,
 			})
