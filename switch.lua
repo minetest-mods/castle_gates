@@ -197,7 +197,7 @@ end
 
 castle_gates.trigger_switch = function(pos, node, clicker, itemstack, pointed_thing)
 	local player_name
-	if clicker then
+	if clicker and clicker:is_player() then
 		player_name = clicker:get_player_name()
 		update_switch_targets(clicker, nil) -- If there are any linkage UI elements on display, get rid of them.
 	end
@@ -242,13 +242,13 @@ castle_gates.clear_switch = function(pos)
 	remove_switch_hash(switch_hash)
 end
 
-local trigger_switch = function(pos, node, clicker)
+local trigger_switch_with_sound = function(pos, node, clicker, itemstack, pointed_thing)
 	minetest.sound_play("castle_gates_switch", {
 		pos = pos,
 		gain = 1.0,
 		max_hear_distance = 32,
 	})
-	castle_gates.trigger_switch(pos, node, clicker)
+	castle_gates.trigger_switch(pos, node, clicker, itemstack, pointed_thing)
 end
 
 local switch_def = {
@@ -282,14 +282,14 @@ local switch_def = {
 	},
 	drops = "castle_gates:switch",
 	is_ground_content = false,
-	on_rightclick = trigger_switch,
+	on_rightclick = trigger_switch_with_sound,
 	on_destruct = castle_gates.clear_switch,
 }
 
 if minetest.get_modpath("mesecons") then
 	switch_def.mesecons = {
 		effector = {
-			action_on = trigger_switch,
+			action_on = trigger_switch_with_sound,
 		}
 	}
 end
@@ -319,7 +319,7 @@ local switch_gate_linkage_def = {
 	inventory_image = "castle_gates_linkage.png",
 	groups = {tool = 1},
 	on_use = function(itemstack, user, pointed_thing)	
-		if pointed_thing.type ~="node" then
+		if pointed_thing.type ~="node" or user == nil or not user:is_player() then
 			return
 		end
 		local pointed_pos = pointed_thing.under
