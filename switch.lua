@@ -7,13 +7,19 @@ else
 	S, NS = dofile(MP.."/intllib.lua")
 end
 
+local print_debug = function(text)
+	minetest.debug("castle_gates debugging: " .. text)
+end
+
 local worldpath = minetest.get_worldpath()
 local filename = worldpath .. "/castle_gates_switch_map.lua"
 local load_switch_data = function()
 	local f, e = loadfile(filename)
 	if f then
+		print_debug("loaded " .. filename)
 		castle_gates.switch_map = f()
 	else
+		print_debug("failed to load " .. filename)
 		castle_gates.switch_map = {}
 	end
 end
@@ -26,14 +32,18 @@ castle_gates.save_switch_data = function()
 	dirty_data = true
 	-- Simple way of accumulating a bunch of simultaneous save data calls
 	-- into a single file write
+	print_debug("delayed save switch data call")
 	minetest.after(0.1, function()
 		dirty_data = false
 		local file, e = io.open(filename, "w")
 		if not file then
+			print_debug("failed to write " .. filename)
 			return
 		end
 		file:write(minetest.serialize(castle_gates.switch_map))
+		print_debug("wrote to " .. filename)
 		file:close()
+		print_debug("closed " .. filename)
 	end)
 end
 
@@ -102,9 +112,11 @@ local update_switch_targets = function(player, switch_hash)
 	
 	-- If nil was provided as a parameter, we're done.
 	if switch_hash == nil then
+		print_debug("removed hud for player " .. player_name)
 		return
 	end
 
+	print_debug("showing/updating hud for player " .. player_name)
 	-- If switch_hash gives us valid targets, show them
 	local gates = switch_map[switch_hash] or {}
 	local switch_pos = minetest.get_position_from_hash(switch_hash)
@@ -186,6 +198,7 @@ local remove_switch_hash = function(invalid_target)
 end
 
 local swap_switch = function(pos, node)
+	print_debug("swap switch for node " .. node.name)
 	if node.name == "castle_gates:switch" then
 		node.name = "castle_gates:switch2"
 		minetest.swap_node(pos, node)
@@ -196,6 +209,7 @@ local swap_switch = function(pos, node)
 end
 
 castle_gates.trigger_switch = function(pos, node, clicker, itemstack, pointed_thing)
+	print_debug("triggering switch")
 	local player_name
 	if clicker and clicker:is_player() then
 		player_name = clicker:get_player_name()
@@ -213,8 +227,10 @@ castle_gates.trigger_switch = function(pos, node, clicker, itemstack, pointed_th
 				minetest.chat_send_player(player_name, S("Gate node at @1 was in an unloaded region and was not triggered.",
 					minetest.pos_to_string(target_pos)))
 			elseif minetest.get_item_group(target_node.name, "castle_gate") == 0 then
+				print_debug("switch was pointing to a " .. target_node.name .. " which has been marked for removal from the switch map")
 				table.insert(invalid_gates, target_hash) -- clean removed gate segments out of the switch map
 			else
+				print_debug("switch is triggering gate node " .. target_node.name .. " at " .. minetest.pos_to_string(target_pos))
 				castle_gates.trigger_gate(target_pos, target_node, clicker)
 				triggered = true
 			end
@@ -232,17 +248,20 @@ castle_gates.trigger_switch = function(pos, node, clicker, itemstack, pointed_th
 		end
 	else
 		if player_name then
-			minetest.chat_send_player(player_name, S("Switch not connected to a gate"))
+			minetest.chat_send_player(player_name, S("Switch is not connected to a gate"))
 		end
 	end
 end
 
+-- This can be used by gate nodes too, but is not required because
+-- switches clean up invalid gate associations themselves when they run
 castle_gates.clear_switch = function(pos)
 	local switch_hash = minetest.hash_node_position(pos)
 	remove_switch_hash(switch_hash)
 end
 
 local trigger_switch_with_sound = function(pos, node, clicker, itemstack, pointed_thing)
+	print_debug("trigger_switch_with_sound")
 	minetest.sound_play("castle_gates_switch", {
 		pos = pos,
 		gain = 1.0,
@@ -305,11 +324,14 @@ local function deep_copy(input)
 	return output
 end
 
-minetest.register_node("castle_gates:switch", switch_def)
 local switch2_def = deep_copy(switch_def)
 switch2_def.mesh = "castle_gates_switch2.obj"
 switch2_def.groups.not_in_creative_inventory = 1 -- if you don't deep-copy and just use the original, this group change applies to both
+minetest.register_node("castle_gates:switch", switch_def)
 minetest.register_node("castle_gates:switch2", switch2_def)
+
+------------------------------------------------------------------------------------
+-- Linkage tool
 
 local switch_gate_linkage_def = {
 	description = S("Switch/Gate Linkage"),
@@ -333,6 +355,7 @@ local switch_gate_linkage_def = {
 		local switch_hash = nil
 		local switch_pos = meta:get("switch")
 		if switch_pos then
+			print_debug("linkage tool has a recorded switch at " .. switch_pos)
 			switch_pos = minetest.string_to_pos(switch_pos)
 			switch_hash = minetest.hash_node_position(switch_pos)
 		end

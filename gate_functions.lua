@@ -7,6 +7,10 @@ else
 	S, NS = dofile(MP.."/intllib.lua")
 end
 
+local print_debug = function(text)
+	minetest.debug("castle_gates debugging: " .. text)
+end
+
 -- Given a facedir, returns a set of all the corresponding directions
 local get_dirs = function(facedir)
 	local dirs = {}
@@ -122,6 +126,7 @@ end
 
 
 local get_door_layout = function(pos, facedir, player)
+	print_debug("getting door layout for " .. minetest.pos_to_string(pos))
 	if facedir > 23 then return nil end -- A bug in another mod once resulted in bad param2s being written to nodes, this will at least prevent crashes if something like that happens again.
 
 	-- This method does a flood-fill looking for all nodes that meet the following criteria:
@@ -234,9 +239,11 @@ local get_door_layout = function(pos, facedir, player)
 			test_pos = minetest.get_position_from_hash(test_pos)
 		end
 	end
+	print_debug("door layout node reading finished")
 	
 	if door.hinge == nil then
 		--sliding door, evaluate which directions it can go
+		print_debug("sliding door")
 		door.can_slide = {top=true, bottom=true, left=true, right=true}
 		for door_pos_hash, door_node in pairs(door.all) do
 			local door_pos = minetest.get_position_from_hash(door_pos_hash)
@@ -247,6 +254,7 @@ local get_door_layout = function(pos, facedir, player)
 		end
 	else
 		--rotating door, evaluate which direction it can go. Slightly more complicated.
+		print_debug("rotating door")
 		local origin = door.hinge.placement
 		local axis = door.hinge.axis
 		local backfront = dir_to_axis(door.directions.back)
@@ -302,11 +310,13 @@ local get_door_layout = function(pos, facedir, player)
 			end
 		end	
 	end
+	print_debug("finished door layout: " .. dump(door))
 	return door
 end
 
 local switch_map
 local update_switch_map = function(old_pos, new_pos)
+	print_debug("update switch map location from " .. minetest.pos_to_string(old_pos) .. " to " .. minetest.pos_to_string(new_pos))
 	if not switch_map then
 		switch_map = castle_gates.switch_map
 	end
@@ -326,6 +336,7 @@ local update_switch_map = function(old_pos, new_pos)
 end
 
 local slide_gate = function(door, direction)
+	print_debug("sliding gate to new position")
 	local old_door_all = door.all
 	door.all = {}
 	for door_pos_hash, door_node in pairs(old_door_all) do
@@ -338,6 +349,7 @@ local slide_gate = function(door, direction)
 end
 
 local rotate_door = function (door, direction)
+	print_debug("rotating gate to new position")
 	if not door.swings[direction] then
 		return false
 	end
@@ -367,11 +379,13 @@ end
 local triggered_already = {} -- prevent multiple activations of the same gate in the same position
 
 castle_gates.trigger_gate = function(pos, node, player)
+	print_debug("trigger_gate called")
 	local door = get_door_layout(pos, node.param2, player)
 	
 	if door ~= nil then
 		local root_hash = next(door.all)
 		if triggered_already[root_hash] then
+			print_debug("gate was recently triggered, ignoring this trigger_gate call")
 			-- if any node in the door is listed in triggered_already, ignore this call
 			return
 		end
@@ -380,6 +394,7 @@ castle_gates.trigger_gate = function(pos, node, player)
 			local door_pos = minetest.get_position_from_hash(door_pos_hash)
 			minetest.set_node(door_pos, {name="air"})
 		end
+		print_debug("cleared gate nodes")
 		
 		local door_moved = false
 		if door.can_slide ~= nil then -- this is a sliding door
@@ -432,20 +447,25 @@ castle_gates.trigger_gate = function(pos, node, player)
 			end
 		end
 
+		print_debug("writing new gate nodes")
 		for door_pos_hash, door_node in pairs(door.all) do
 			local door_pos = minetest.get_position_from_hash(door_pos_hash)
+			print_debug("writing node " .. door_node.name .. " at " .. minetest.pos_to_string(door_pos))
 			minetest.set_node(door_pos, door_node)
 			minetest.get_meta(door_pos):set_string("previous_move", door.previous_move)
 		end
 		
 		if door_moved then
+			print_debug("door moved. Preparing to re-trigger")
 			local door_all = door.all
 			for door_pos_hash in pairs(door_all) do
 				-- list all door nodes in triggered_already, we don't know which ones will be incorporated
 				-- into the next door set in which order
 				triggered_already[door_pos_hash] = true
 			end
+			print_debug("calling minetest.after")
 			minetest.after(1, function()
+				print_debug("minetest.after call executing")
 				for door_pos_hash in pairs(door_all) do
 					triggered_already[door_pos_hash] = nil
 				end
