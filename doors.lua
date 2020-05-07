@@ -67,7 +67,7 @@ if minetest.get_modpath("xpanes") then
 		tiles = {"castle_jailbars.png"},
 		drawtype = "airlike",
 		paramtype = "light",
-		textures = {"castle_jailbars.png", "castle_jailbars.png", "xpanes_space.png"},
+		textures = {"castle_jailbars.png", "castle_jailbars.png", "castle_jailbars.png"},
 		inventory_image = "castle_jailbars.png",
 		wield_image = "castle_jailbars.png",
 		sounds = default.node_sound_metal_defaults(),
