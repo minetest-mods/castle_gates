@@ -134,7 +134,9 @@ local get_door_layout = function(pos, facedir, player)
 	local can_slide_to = {}
 	
 	local castle_gate_group_value -- this will be populated from the first gate node we encounter, which will be the one that was clicked on
-	
+
+	local player_has_bypass = minetest.check_player_privs(player, "protection_bypass")
+
 	local test_pos = pos
 	while test_pos ~= nil do
 		local test_pos_hash = minetest.hash_node_position(test_pos)
@@ -146,7 +148,7 @@ local get_door_layout = function(pos, facedir, player)
 			return nil
 		end
 		
-		if minetest.is_protected(test_pos, player:get_player_name()) and not minetest.check_player_privs(player, "protection_bypass") then
+		if not player_has_bypass and minetest.is_protected(test_pos, player:get_player_name()) then
 			door.contains_protected_node = true
 		end
 		
@@ -327,6 +329,10 @@ end
 -- only the "castle_gate" group is needed for that.
 
 castle_gates.trigger_gate = function(pos, node, player)
+	if not player or not player:get_pos() then
+		return -- Player left; invalid ObjectRef
+	end
+
 	local door = get_door_layout(pos, node.param2, player)
 	
 	if door ~= nil then
@@ -391,9 +397,11 @@ castle_gates.trigger_gate = function(pos, node, player)
 		end
 		
 		if door_moved then
-			minetest.after(1, function()
-				castle_gates.trigger_gate(door.all[1].pos, door.all[1].node, player)
-				end)
+			minetest.after(1, function(player_name)
+				-- Get current player ObjectRef (nil when gone)
+				castle_gates.trigger_gate(door.all[1].pos, door.all[1].node,
+					minetest.get_player_by_name(player_name))
+			end, player:get_player_name())
 		end
 	end	
 end
