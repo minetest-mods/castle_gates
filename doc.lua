@@ -4,9 +4,7 @@ if not minetest.get_modpath("doc") then
 	return
 end
 
--- internationalization boilerplate
-local MP = minetest.get_modpath(minetest.get_current_modname())
-local S, NS = dofile(MP.."/intllib.lua")
+local S = minetest.get_translator("castle_gates")
 
 castle_gates.doc.portcullis_bars_longdesc = S("Heavy wooden bars designed to prevent entry even to siege equipment.")
 castle_gates.doc.portcullis_bars_usagehelp = S("Place these bars in a structure together and they will slide as a unified gate when clicked on.")
