@@ -1,3 +1,7 @@
+if not minetest.get_translator then
+	error("castle_gates requires Minetest 5.0.0 or newer")
+end
+
 castle_gates = {}
 
 local modpath = minetest.get_modpath(minetest.get_current_modname())

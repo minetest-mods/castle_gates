@@ -1,5 +1,0 @@
-default
-castle_masonry?
-doors?
-xpanes?
-doc?
