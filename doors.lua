@@ -29,7 +29,7 @@ if minetest.get_modpath("doors") then
 			{"default:steel_ingot", ""},
 		}
 	end
-	
+
 	doors.register("castle_gates:jail_door", {
 		tiles = {{ name = "castle_door_jail.png", backface_culling = true }},
 		description = S("Jail Door"),
@@ -40,7 +40,7 @@ if minetest.get_modpath("doors") then
 		sound_close = "doors_steel_door_close",
 		recipe = door_recipe,
 	})
-	
+
 	minetest.register_alias("castle:oak_door_a", "castle_gates:oak_door_a")
 	minetest.register_alias("castle:oak_door_b", "castle_gates:oak_door_b")
 	minetest.register_alias("castle:jail_door_a", "castle_gates:jail_door_a")

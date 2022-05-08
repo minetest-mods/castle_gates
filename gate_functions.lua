@@ -1,5 +1,3 @@
-local MP = minetest.get_modpath(minetest.get_current_modname())
-
 -- Given a facedir, returns a set of all the corresponding directions
 local get_dirs = function(facedir)
 	local dirs = {}
@@ -8,7 +6,7 @@ local get_dirs = function(facedir)
 		{x=0, y=0, z=-1},
 		{x=1, y=0, z=0},
 		{x=-1, y=0, z=0},
-		{x=0, y=-1, z=0}}	
+		{x=0, y=-1, z=0}}
 	dirs.back = minetest.facedir_to_dir(facedir)
 	dirs.top = top[math.floor(facedir/4)]
 	dirs.right = {
@@ -35,8 +33,8 @@ end
 
 -- Given a hinge definition, turns it into an axis and placement that can be used by the door rotation.
 local interpret_hinge = function(hinge_def, pos, node_dirs)
-	local axis = dir_to_axis(node_dirs[hinge_def.axis]) 
-	
+	local axis = dir_to_axis(node_dirs[hinge_def.axis])
+
 	local placement
 	if type(hinge_def.offset) == "string" then
 		placement = vector.add(pos, node_dirs[hinge_def.offset])
@@ -61,16 +59,22 @@ end
 
 local facedir_rotate = {
 	['x'] = {
-		[-1] = {[0]=4, 5, 6, 7, 22, 23, 20, 21, 0, 1, 2, 3, 13, 14, 15, 12, 19, 16, 17, 18, 10, 11, 8, 9}, -- 270 degrees
-		[1] = {[0]=8, 9, 10, 11, 0, 1, 2, 3, 22, 23, 20, 21, 15, 12, 13, 14, 17, 18, 19, 16, 6, 7, 4, 5}, -- 90 degrees
+		-- 270 degrees
+		[-1] = {[0]=4, 5, 6, 7, 22, 23, 20, 21, 0, 1, 2, 3, 13, 14, 15, 12, 19, 16, 17, 18, 10, 11, 8, 9},
+		-- 90 degrees
+		[1] = {[0]=8, 9, 10, 11, 0, 1, 2, 3, 22, 23, 20, 21, 15, 12, 13, 14, 17, 18, 19, 16, 6, 7, 4, 5},
 	},
 	['y'] = {
-		[-1] = {[0]=3, 0, 1, 2, 19, 16, 17, 18, 15, 12, 13, 14, 7, 4, 5, 6, 11, 8, 9, 10, 21, 22, 23, 20}, -- 270 degrees
-		[1] = {[0]=1, 2, 3, 0, 13, 14, 15, 12, 17, 18, 19, 16, 9, 10, 11, 8, 5, 6, 7, 4, 23, 20, 21, 22}, -- 90 degrees
+		-- 270 degrees
+		[-1] = {[0]=3, 0, 1, 2, 19, 16, 17, 18, 15, 12, 13, 14, 7, 4, 5, 6, 11, 8, 9, 10, 21, 22, 23, 20},
+		-- 90 degrees
+		[1] = {[0]=1, 2, 3, 0, 13, 14, 15, 12, 17, 18, 19, 16, 9, 10, 11, 8, 5, 6, 7, 4, 23, 20, 21, 22},
 	},
 	['z'] = {
-		[-1] = {[0]=16, 17, 18, 19, 5, 6, 7, 4, 11, 8, 9, 10, 0, 1, 2, 3, 20, 21, 22, 23, 12, 13, 14, 15}, -- 270 degrees
-		[1] = {[0]=12, 13, 14, 15, 7, 4, 5, 6, 9, 10, 11, 8, 20, 21, 22, 23, 0, 1, 2, 3, 16, 17, 18, 19}, -- 90 degrees
+		-- 270 degrees
+		[-1] = {[0]=16, 17, 18, 19, 5, 6, 7, 4, 11, 8, 9, 10, 0, 1, 2, 3, 20, 21, 22, 23, 12, 13, 14, 15},
+		-- 90 degrees
+		[1] = {[0]=12, 13, 14, 15, 7, 4, 5, 6, 9, 10, 11, 8, 20, 21, 22, 23, 0, 1, 2, 3, 16, 17, 18, 19},
 	}
 }
 	--90 degrees CW about x-axis: (x, y, z) -> (x, -z, y)
@@ -92,7 +96,7 @@ local rotate_pos = function(axis, direction, pos)
 		else
 			return {x= pos.z, y= pos.y, z= -pos.x}
 		end
-	else	
+	else
 		if direction < 0 then
 			return {x= -pos.y, y= pos.x, z= pos.z}
 		else
@@ -115,12 +119,17 @@ end
 
 
 local get_door_layout = function(pos, facedir, player)
-	if facedir > 23 then return nil end -- A bug in another mod once resulted in bad param2s being written to nodes, this will at least prevent crashes if something like that happens again.
+	if facedir > 23 then
+		--[[ A bug in another mod once resulted in bad param2s being written to nodes, this will at least prevent
+		     crashes if something like that happens again.]]
+		return nil
+	end
 
 	-- This method does a flood-fill looking for all nodes that meet the following criteria:
 	-- belongs to a "castle_gate" group
 	-- has the same "back" direction as the initial node
-	-- is accessible via up, down, left or right directions unless one of those directions goes through an edge that one of the two nodes has marked as a gate edge
+	-- is accessible via up, down, left or right directions unless one of those directions goes through an edge that
+	-- one of the two nodes has marked as a gate edge
 	local door = {}
 
 	door.all = {}
@@ -132,8 +141,9 @@ local get_door_layout = function(pos, facedir, player)
 	local to_test = {}
 	local tested = {}
 	local can_slide_to = {}
-	
-	local castle_gate_group_value -- this will be populated from the first gate node we encounter, which will be the one that was clicked on
+
+	-- this will be populated from the first gate node we encounter, which will be the one that was clicked on
+	local castle_gate_group_value
 
 	local player_has_bypass = minetest.check_player_privs(player, "protection_bypass")
 
@@ -147,22 +157,25 @@ local get_door_layout = function(pos, facedir, player)
 			--array is next to unloaded nodes, too dangerous to do anything. Abort.
 			return nil
 		end
-		
+
 		if not player_has_bypass and minetest.is_protected(test_pos, player:get_player_name()) then
 			door.contains_protected_node = true
 		end
-		
+
 		local test_node_def = minetest.registered_nodes[test_node.name]
 		if test_node_def.buildable_to then
 			can_slide_to[test_pos_hash] = true
 		end
-		
-		if test_node_def.paramtype2 == "facedir" and test_node.param2 <= 23 then -- prospective door nodes need to be of type facedir and have a valid param2
+
+		if test_node_def.paramtype2 == "facedir" and test_node.param2 <= 23 then
+			-- prospective door nodes need to be of type facedir and have a valid param2
 			local test_node_dirs = get_dirs(test_node.param2)
-			local coplanar = vector.equals(test_node_dirs.back, door.directions.back) -- the "back" vector needs to point in the same direction as the rest of the door
-			
+			-- the "back" vector needs to point in the same direction as the rest of the door
+			local coplanar = vector.equals(test_node_dirs.back, door.directions.back)
+
 			if castle_gate_group_value == nil and test_node_def.groups.castle_gate ~= nil then
-				castle_gate_group_value = test_node_def.groups.castle_gate -- read the group value from the first gate node encountered
+				-- read the group value from the first gate node encountered
+				castle_gate_group_value = test_node_def.groups.castle_gate
 			end
 
 			if coplanar and test_node_def.groups.castle_gate == castle_gate_group_value then
@@ -172,20 +185,27 @@ local get_door_layout = function(pos, facedir, player)
 					local axis, placement = interpret_hinge(test_node_def._gate_hinge, test_pos, test_node_dirs)
 					if door.hinge == nil then -- this is the first hinge we've encountered.
 						door.hinge = {axis=axis, placement=placement}
-						door.directions = test_node_dirs -- force the door as a whole to use the same reference frame as the first hinge
-					elseif door.hinge.axis ~= axis then -- there was a previous hinge. Do they rotate on the same axis?
-						return nil -- Misaligned hinge axes, door cannot rotate.
+						-- force the door as a whole to use the same reference frame as the first hinge
+						door.directions = test_node_dirs
+					elseif door.hinge.axis ~= axis then
+						-- there was a previous hinge. Do they rotate on the same axis?
+						-- Misaligned hinge axes, door cannot rotate.
+						return nil
 					else
 						local axis_dir = {x=0, y=0, z=0}
 						axis_dir[axis] = 1
-						local displacement = vector.normalize(vector.subtract(placement, door.hinge.placement)) -- check if this new hinge is displaced relative to the first hinge on any axis other than the rotation axis
-						if not (vector.equals(displacement, axis_dir) or vector.equals(displacement, vector.multiply(axis_dir, -1))) then
+						-- check if this new hinge is displaced relative to the first hinge on any axis other than the
+						-- rotation axis
+						local displacement = vector.normalize(vector.subtract(placement, door.hinge.placement))
+						if not (vector.equals(displacement, axis_dir) or
+							    vector.equals(displacement, vector.multiply(axis_dir, -1))) then
 							return nil -- Misaligned hinge offset, door cannot rotate.
 						end
 					end
 				end
-				
-				can_slide_to[test_pos_hash] = true -- since this is part of the door, other parts of the door can slide into it
+
+				-- since this is part of the door, other parts of the door can slide into it
+				can_slide_to[test_pos_hash] = true
 
 				local test_directions = {"top", "bottom", "left", "right"}
 				for _, dir in pairs(test_directions) do
@@ -193,51 +213,64 @@ local get_door_layout = function(pos, facedir, player)
 					local adjacent_node = minetest.get_node(adjacent_pos)
 					local adjacent_def = minetest.registered_nodes[adjacent_node.name]
 					local adjacent_pos_hash = minetest.hash_node_position(adjacent_pos)
-					
+
 					if adjacent_def.buildable_to then
 						can_slide_to[adjacent_pos_hash] = true
 					end
-					
-					if test_node_def._gate_edges == nil or not test_node_def._gate_edges[dir] then -- if we ourselves are an edge node, don't look in the direction we're an edge in
-						
-						if tested[adjacent_pos_hash] == nil then -- don't look at nodes that have already been looked at
-							if adjacent_def.paramtype2 == "facedir" then -- all doors are facedir nodes so we can pre-screen some targets
+
+					-- if we ourselves are an edge node, don't look in the direction we're an edge in
+					if test_node_def._gate_edges == nil or not test_node_def._gate_edges[dir] then
+
+						if tested[adjacent_pos_hash] == nil then
+							-- don't look at nodes that have already been looked at
+							if adjacent_def.paramtype2 == "facedir" then
+								-- all doors are facedir nodes so we can pre-screen some targets
 								local edge_points_back_at_test_pos = false
-								-- Look at the adjacent node's definition. If it's got gate edges, check if they point back at us.
+								-- Look at the adjacent node's definition. If it's got gate edges, check if they
+								-- point back at us.
 								if adjacent_def._gate_edges ~= nil then
 									local adjacent_directions = get_dirs(adjacent_node.param2)
-									for dir, val in pairs(adjacent_def._gate_edges) do
-										if vector.equals(vector.add(adjacent_pos, adjacent_directions[dir]), test_pos) then
+									for dir2, _ in pairs(adjacent_def._gate_edges) do
+										if vector.equals(vector.add(adjacent_pos, adjacent_directions[dir2]),
+											             test_pos) then
 											edge_points_back_at_test_pos = true
 											break
 										end
-									end									
+									end
 								end
-								
+
 								if not edge_points_back_at_test_pos then
 									table.insert(to_test, adjacent_pos_hash)
 								end
 							end
 						end
-					end				
+					end
 				end
 			end
 		end
-		
+
 		test_pos = table.remove(to_test)
 		if test_pos ~= nil then
 			test_pos = minetest.get_position_from_hash(test_pos)
 		end
 	end
-	
+
 	if door.hinge == nil then
 		--sliding door, evaluate which directions it can go
 		door.can_slide = {top=true, bottom=true, left=true, right=true}
 		for _,door_node in pairs(door.all) do
-			door.can_slide.top = door.can_slide.top and can_slide_to[minetest.hash_node_position(vector.add(door_node.pos, door.directions.top))]
-			door.can_slide.bottom = door.can_slide.bottom and can_slide_to[minetest.hash_node_position(vector.add(door_node.pos, door.directions.bottom))]
-			door.can_slide.left = door.can_slide.left and can_slide_to[minetest.hash_node_position(vector.add(door_node.pos, door.directions.left))]
-			door.can_slide.right = door.can_slide.right and can_slide_to[minetest.hash_node_position(vector.add(door_node.pos, door.directions.right))]
+			door.can_slide.top = door.can_slide.top and can_slide_to[
+				minetest.hash_node_position(vector.add(door_node.pos, door.directions.top))
+			]
+			door.can_slide.bottom = door.can_slide.bottom and can_slide_to[
+				minetest.hash_node_position(vector.add(door_node.pos, door.directions.bottom))
+			]
+			door.can_slide.left = door.can_slide.left and can_slide_to[
+				minetest.hash_node_position(vector.add(door_node.pos, door.directions.left))
+			]
+			door.can_slide.right = door.can_slide.right and can_slide_to[
+				minetest.hash_node_position(vector.add(door_node.pos, door.directions.right))
+			]
 		end
 	else
 		--rotating door, evaluate which direction it can go. Slightly more complicated.
@@ -248,28 +281,33 @@ local get_door_layout = function(pos, facedir, player)
 
 		door.swings = {}
 
-		for _, direction in pairs({-1, 1}) do 
+		for _, direction in pairs({-1, 1}) do
 			door.swings[direction] = true
 			for _, door_node in pairs(door.all) do
 				origin[axis] = door_node.pos[axis]
-				if not vector.equals(door_node.pos, origin) then -- There's no obstruction if the node is literally located along the rotation axis
+				if not vector.equals(door_node.pos, origin) then
+					-- There's no obstruction if the node is literally located along the rotation axis
 					local newpos = rotate_pos_displaced(door_node.pos, origin, axis, direction)
 					local newnode = minetest.get_node(newpos)
 					local newdef = minetest.registered_nodes[newnode.name]
-					if not newdef.buildable_to then -- check if the destination node is free.
+					if not newdef.buildable_to then
+						-- check if the destination node is free.
 						door.swings[direction] = false
 						break
 					end
-					
+
 					local swing_corner = {} -- the corner of the square "arc" that a Minetest gate swings through
 					local scan_dir
 					swing_corner[axis] = door_node.pos[axis]
 					swing_corner[backfront] = newpos[backfront]
 					swing_corner[leftright] = door_node.pos[leftright]
-					if not (vector.equals(newpos, swing_corner) or vector.equals(door_node.pos, swing_corner)) then -- we're right next to the hinge, no need for further testing
-						scan_dir = vector.direction(newpos, swing_corner) -- get the direction from the new door position toward the swing corner
+					if not (vector.equals(newpos, swing_corner) or vector.equals(door_node.pos, swing_corner)) then
+						-- we're right next to the hinge, no need for further testing
+						-- get the direction from the new door position toward the swing corner
+						scan_dir = vector.direction(newpos, swing_corner)
 						repeat
-							newpos = vector.add(newpos, scan_dir) -- we start with newpos on the destination node, which has already been tested.
+							-- we start with newpos on the destination node, which has already been tested.
+							newpos = vector.add(newpos, scan_dir)
 							if not get_buildable_to(newpos) then
 								door.swings[direction] = false
 							end
@@ -277,7 +315,8 @@ local get_door_layout = function(pos, facedir, player)
 
 						if not (vector.equals(newpos, door_node.pos) or door.swings[direction] == false) then
 							scan_dir = vector.direction(newpos, door_node.pos)
-							newpos = vector.add(newpos, scan_dir) -- the first step here is a freebie since we've already checked swing_corner
+							-- the first step here is a freebie since we've already checked swing_corner
+							newpos = vector.add(newpos, scan_dir)
 							while not (vector.equals(newpos, door_node.pos) or door.swings[direction] == false) do
 								if not get_buildable_to(newpos) then
 									door.swings[direction] = false
@@ -287,13 +326,13 @@ local get_door_layout = function(pos, facedir, player)
 						end
 					end
 				end
-				
+
 				if door.swings[direction] == false then
 					break
 				end
-				
+
 			end
-		end	
+		end
 	end
 	return door
 end
@@ -313,7 +352,7 @@ local rotate_door = function (door, direction)
 
 	local origin = door.hinge.placement
 	local axis = door.hinge.axis
-	
+
 	for _, door_node in pairs(door.all) do
 		door_node.pos = rotate_pos_displaced(door_node.pos, origin, axis, direction)
 		door_node.node.param2 = facedir_rotate[axis][direction][door_node.node.param2]
@@ -334,12 +373,12 @@ castle_gates.trigger_gate = function(pos, node, player)
 	end
 
 	local door = get_door_layout(pos, node.param2, player)
-	
+
 	if door ~= nil then
 		for _, door_node in pairs(door.all) do
 			minetest.set_node(door_node.pos, {name="air"})
 		end
-		
+
 		local door_moved = false
 		if door.can_slide ~= nil then -- this is a sliding door
 			if door.previous_move == "top" and door.can_slide.top then
@@ -355,7 +394,7 @@ castle_gates.trigger_gate = function(pos, node, player)
 				slide_gate(door, "right")
 				door_moved = true
 			end
-			
+
 			if not door_moved then -- reverse door's direction for next time
 				if door.previous_move == "top" and door.can_slide.bottom then
 					door.previous_move = "bottom"
@@ -380,8 +419,8 @@ castle_gates.trigger_gate = function(pos, node, player)
 				door_moved = rotate_door(door, 1)
 			elseif door.previous_move == "widdershins" then
 				door_moved = rotate_door(door, -1)
-			end				
-			
+			end
+
 			if not door_moved then
 				if door.previous_move == "deosil" then
 					door.previous_move = "widdershins"
@@ -395,7 +434,7 @@ castle_gates.trigger_gate = function(pos, node, player)
 			minetest.set_node(door_node.pos, door_node.node)
 			minetest.get_meta(door_node.pos):set_string("previous_move", door.previous_move)
 		end
-		
+
 		if door_moved then
 			minetest.after(1, function(player_name)
 				-- Get current player ObjectRef (nil when gone)
@@ -403,5 +442,5 @@ castle_gates.trigger_gate = function(pos, node, player)
 					minetest.get_player_by_name(player_name))
 			end, player:get_player_name())
 		end
-	end	
+	end
 end
