@@ -12,7 +12,7 @@ local get_material_properties = function(material)
 		composition_def = minetest.registered_nodes[material.craft_material]
 		burn_time = minetest.get_craft_result({method="fuel", width=1, items={ItemStack(material.craft_materia)}}).time
 	end
-	
+
 	local tiles = material.tile
 	if tiles == nil then
 		tiles = composition_def.tile
@@ -24,7 +24,7 @@ local get_material_properties = function(material)
 	if desc == nil then
 		desc = composition_def.description
 	end
-	
+
 	return composition_def, burn_time, tiles, desc
 end
 
@@ -49,24 +49,27 @@ castle_gates.register_gate_slot = function(material)
 		paramtype2 = "facedir",
 		groups = composition_def.groups,
 		sounds = composition_def.sounds,
-		
+
 		node_box = {
 			type = "fixed",
 			fixed = {
 				{-0.5, -0.5, -0.5, 0.5, 0.5, 0.5}, -- body
 				{-0.5, -0.5, -0.75, 0.5, 0.5, -1.5}, -- bracket
-			}
+			},
 		},
-		
+
 		collision_box = {
 			type = "fixed",
-			fixed = {-0.5, -0.5, -0.5, 0.5, 0.5, 1.5}, -- body
+			fixed = {
+				{-0.5, -0.5, -0.5, 0.5, 0.5, 0.5}, -- body
+				{-0.5, -0.5, -0.75, 0.5, 0.5, -1.5}, -- bracket
+			},
 		},
 	})
-	
+
 	minetest.register_node(mod_name..":"..material.name.."_gate_slot_reverse", {
 		drawtype = "nodebox",
-		description = S("@1 Gate Slot Reverse", desc), 
+		description = S("@1 Gate Slot Reverse", desc),
 		_doc_items_longdesc = castle_gates.doc.gate_slot_reverse_longdesc,
 		_doc_items_usagehelp = castle_gates.doc.gate_slot_reverse_usagehelp,
 		tiles = tile,
@@ -74,21 +77,21 @@ castle_gates.register_gate_slot = function(material)
 		paramtype2 = "facedir",
 		groups = composition_def.groups,
 		sounds = composition_def.sounds,
-		
+
 		node_box = {
 			type = "fixed",
 			fixed = {
 				{-0.5, -0.5, -1.25, 0.5, 0.5, 0.5}, -- body
 			}
 		},
-		
+
 		collision_box = {
 			type = "fixed",
 			fixed = {-0.5, -0.5, -1.25, 0.5, 0.5, 0.5}, -- body
 		},
 	})
-	
-	
+
+
 	minetest.register_craft({
 	output = mod_name..":"..material.name.."_gate_slot 2",
 	recipe = {
@@ -96,7 +99,7 @@ castle_gates.register_gate_slot = function(material)
 		{material.craft_material,"",material.craft_material},
 		},
 	})
-	
+
 	minetest.register_craft({
 		output = mod_name..":"..material.name.."_gate_slot",
 		type = "shapeless",
@@ -107,7 +110,7 @@ castle_gates.register_gate_slot = function(material)
 		type = "shapeless",
 		recipe = {mod_name..":"..material.name.."_gate_slot"},
 	})
-	
+
 	if burn_time > 0 then
 		minetest.register_craft({
 			type = "fuel",
@@ -118,7 +121,7 @@ castle_gates.register_gate_slot = function(material)
 			type = "fuel",
 			recipe = mod_name..":"..material.name.."_gate_slot_reverse",
 			burntime = burn_time * 2,
-		})	
+		})
 	end
 end
 
