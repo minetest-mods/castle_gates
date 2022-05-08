@@ -23,4 +23,8 @@ stds.minetest = {
 
 globals = {
 	"castle_gates",
+	"castle_masonry",
+	"doc",
+	"doors",
+	"xpanes",
 }
