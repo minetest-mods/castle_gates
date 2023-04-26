@@ -438,8 +438,10 @@ castle_gates.trigger_gate = function(pos, node, player)
 		if door_moved then
 			minetest.after(1, function(player_name)
 				-- Get current player ObjectRef (nil when gone)
-				castle_gates.trigger_gate(door.all[1].pos, door.all[1].node,
-					minetest.get_player_by_name(player_name))
+				if door.all[1] then -- Prevent crashes if gate got deleted (e.g. worldedit)
+					castle_gates.trigger_gate(door.all[1].pos, door.all[1].node,
+						minetest.get_player_by_name(player_name))
+				end
 			end, player:get_player_name())
 		end
 	end
