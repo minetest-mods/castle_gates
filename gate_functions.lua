@@ -214,33 +214,35 @@ local get_door_layout = function(pos, facedir, player)
 					local adjacent_def = minetest.registered_nodes[adjacent_node.name]
 					local adjacent_pos_hash = minetest.hash_node_position(adjacent_pos)
 
-					if adjacent_def.buildable_to then
-						can_slide_to[adjacent_pos_hash] = true
-					end
+					if adjacent_def then -- Unknown nodes return no node def
+						if adjacent_def.buildable_to then
+							can_slide_to[adjacent_pos_hash] = true
+						end
 
-					-- if we ourselves are an edge node, don't look in the direction we're an edge in
-					if test_node_def._gate_edges == nil or not test_node_def._gate_edges[dir] then
+						-- if we ourselves are an edge node, don't look in the direction we're an edge in
+						if test_node_def._gate_edges == nil or not test_node_def._gate_edges[dir] then
 
-						if tested[adjacent_pos_hash] == nil then
-							-- don't look at nodes that have already been looked at
-							if adjacent_def.paramtype2 == "facedir" then
-								-- all doors are facedir nodes so we can pre-screen some targets
-								local edge_points_back_at_test_pos = false
-								-- Look at the adjacent node's definition. If it's got gate edges, check if they
-								-- point back at us.
-								if adjacent_def._gate_edges ~= nil then
-									local adjacent_directions = get_dirs(adjacent_node.param2)
-									for dir2, _ in pairs(adjacent_def._gate_edges) do
-										if vector.equals(vector.add(adjacent_pos, adjacent_directions[dir2]),
-											             test_pos) then
-											edge_points_back_at_test_pos = true
-											break
+							if tested[adjacent_pos_hash] == nil then
+								-- don't look at nodes that have already been looked at
+								if adjacent_def.paramtype2 == "facedir" then
+									-- all doors are facedir nodes so we can pre-screen some targets
+									local edge_points_back_at_test_pos = false
+									-- Look at the adjacent node's definition. If it's got gate edges, check if they
+									-- point back at us.
+									if adjacent_def._gate_edges ~= nil then
+										local adjacent_directions = get_dirs(adjacent_node.param2)
+										for dir2, _ in pairs(adjacent_def._gate_edges) do
+											if vector.equals(vector.add(adjacent_pos, adjacent_directions[dir2]),
+															test_pos) then
+												edge_points_back_at_test_pos = true
+												break
+											end
 										end
 									end
-								end
 
-								if not edge_points_back_at_test_pos then
-									table.insert(to_test, adjacent_pos_hash)
+									if not edge_points_back_at_test_pos then
+										table.insert(to_test, adjacent_pos_hash)
+									end
 								end
 							end
 						end
@@ -438,8 +440,10 @@ castle_gates.trigger_gate = function(pos, node, player)
 		if door_moved then
 			minetest.after(1, function(player_name)
 				-- Get current player ObjectRef (nil when gone)
-				castle_gates.trigger_gate(door.all[1].pos, door.all[1].node,
-					minetest.get_player_by_name(player_name))
+				if door.all[1] then -- Prevent crashes if gate got deleted (e.g. worldedit)
+					castle_gates.trigger_gate(door.all[1].pos, door.all[1].node,
+						minetest.get_player_by_name(player_name))
+				end
 			end, player:get_player_name())
 		end
 	end
