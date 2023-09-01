@@ -1,7 +1,4 @@
 # textdomain:castle_gates
-
-# Translation By Carlos Barraza
-
 Heavy wooden bars designed to prevent entry even to siege equipment.=Barras de madera pesadas diseñadas para evitar la entrada incluso a equipo de asedio
 Place these bars in a structure together and they will slide as a unified gate when clicked on.=Coloque estas barras en una estructura juntas y se deslizarán como si estuvieran unidas cuando se le hace clic
 The bottom edge of a portcullis gate, with knobs to lock securely into the floor.=Es el borde inferior de una puerta rastrillo, con perillas para bloquearla con seguridad en el piso
@@ -25,6 +22,9 @@ Gates are multi-node constructions, usually (though not always) consisting of mu
 Oak Door=Puerta de Roble
 Jail Door=Puerta de Cárcel
 Jail Bars=Rejas de Cárcel
+Stonebrick=Ladrillo de Piedra
+@1 Gate Slot=Espacio para Puerta de @1
+@1 Gate Slot Reverse=Espacio para Puerta Invertido de @1
 @1 Portcullis Bars=Barras de Rastrillo de @1
 @1 Portcullis Bottom=Fondo de Rastrillo de @1
 @1 Gate Door=Puerta de Entrada de @1
@@ -33,6 +33,3 @@ Jail Bars=Rejas de Cárcel
 @1 Gate Door With Hinge=Puerta de Entrada de @1 con Bisagra
 Wooden=Madera
 Steel=Hierro
-Stonebrick=Ladrillo de Piedra
-@1 Gate Slot=Espacio para Puerta de @1
-@1 Gate Slot Reverse=Espacio para Puerta Invertido de @1
