@@ -1,5 +1,4 @@
 # textdomain:castle_gates
-
 Heavy wooden bars designed to prevent entry even to siege equipment.=Schwere Holzgitter, die selbst Belagerungsgeräten den Zugang verwehren.
 Place these bars in a structure together and they will slide as a unified gate when clicked on.=Platzieren Sie diese Balken zusammen in einer Struktur, und sie gleiten als ein einheitliches Tor, wenn sie angeklickt werden.
 The bottom edge of a portcullis gate, with knobs to lock securely into the floor.=Die untere Kante eines Fallgatters, mit Knäufen zum sicheren Einrasten in den Boden.
@@ -23,6 +22,9 @@ Gates are multi-node constructions, usually (though not always) consisting of mu
 Oak Door=Eichenholztür
 Jail Door=Gefängnistür
 Jail Bars=Gefängnisstäbe
+Stonebrick=Steinquader
+@1 Gate Slot=@1 Tor Schlitz
+@1 Gate Slot Reverse=@1 Tor Schlitz Umgekehrt
 @1 Portcullis Bars=@1 Fallgitter Balken
 @1 Portcullis Bottom=@1 Fallgitter Unterseite
 @1 Gate Door=@1 Tor Tür
@@ -31,6 +33,3 @@ Jail Bars=Gefängnisstäbe
 @1 Gate Door With Hinge=@1 Tor Tür mit Scharnier
 Wooden=Hölzern
 Steel=Stahl
-Stonebrick=Steinquader
-@1 Gate Slot=@1 Tor Schlitz
-@1 Gate Slot Reverse=@1 Tor Schlitz Umgekehrt
