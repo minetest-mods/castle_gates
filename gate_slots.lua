@@ -63,6 +63,7 @@ castle_gates.register_gate_slot = function(material)
 		paramtype = "light",
 		paramtype2 = "facedir",
 		groups = composition_def.groups,
+		is_ground_content = false,
 		sounds = composition_def.sounds,
 
 		node_box = {
@@ -91,6 +92,7 @@ castle_gates.register_gate_slot = function(material)
 		paramtype = "light",
 		paramtype2 = "facedir",
 		groups = composition_def.groups,
+		is_ground_content = false,
 		sounds = composition_def.sounds,
 
 		node_box = {

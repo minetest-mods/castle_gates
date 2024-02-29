@@ -23,6 +23,7 @@ local function register_gates(
         _doc_items_longdesc = castle_gates.doc.portcullis_bars_longdesc,
         _doc_items_usagehelp = castle_gates.doc.portcullis_bars_usagehelp,
         groups = portcullis_groups,
+        is_ground_content = false,
         tiles = {
             "castle_steel.png^(" .. material_texture .. "^[transformR90^[mask:castle_portcullis_mask.png)",
             "castle_steel.png^(" .. material_texture .. "^[transformR90^[mask:castle_portcullis_mask.png)",
@@ -53,6 +54,7 @@ local function register_gates(
         _doc_items_longdesc = castle_gates.doc.portcullis_bars_bottom_longdesc,
         _doc_items_usagehelp = castle_gates.doc.portcullis_bars_bottom_usagehelp,
         groups = portcullis_groups,
+        is_ground_content = false,
         tiles = {
             "castle_steel.png^(" .. material_texture .. "^[transformR90^[mask:castle_portcullis_mask.png)",
             "castle_steel.png^(" .. material_texture .. "^[transformR90^[mask:castle_portcullis_mask.png)",
@@ -113,6 +115,7 @@ local function register_gates(
         _doc_items_longdesc = castle_gates.doc.gate_panel_longdesc,
         _doc_items_usagehelp = castle_gates.doc.gate_panel_usagehelp,
         groups = panel_groups,
+        is_ground_content = false,
         tiles = {
             material_texture .. "^[transformR90",
             material_texture .. "^[transformR90",
@@ -145,6 +148,7 @@ local function register_gates(
         _doc_items_longdesc = castle_gates.doc.gate_edge_longdesc,
         _doc_items_usagehelp = castle_gates.doc.gate_edge_usagehelp,
         groups = panel_groups,
+        is_ground_content = false,
         tiles = {
             material_texture .. "^[transformR90",
             material_texture .. "^[transformR90",
@@ -184,6 +188,7 @@ local function register_gates(
         _doc_items_longdesc = castle_gates.doc.gate_edge_handle_longdesc,
         _doc_items_usagehelp = castle_gates.doc.gate_edge_handle_usagehelp,
         groups = panel_groups,
+        is_ground_content = false,
         tiles = {
             "castle_steel.png^(" .. material_texture .. "^[mask:castle_door_side_mask.png^[transformR90)",
             "castle_steel.png^(" .. material_texture .. "^[mask:castle_door_side_mask.png^[transformR270)",
@@ -230,6 +235,7 @@ local function register_gates(
         _doc_items_longdesc = castle_gates.doc.gate_hinge_longdesc,
         _doc_items_usagehelp = castle_gates.doc.gate_hinge_usagehelp,
         groups = panel_groups,
+        is_ground_content = false,
         tiles = {
             material_texture .. "^[transformR90",
         },
