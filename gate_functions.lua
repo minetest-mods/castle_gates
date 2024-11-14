@@ -114,7 +114,8 @@ local rotate_pos_displaced = function(pos, origin, axis, direction)
 end
 
 local get_buildable_to = function(pos)
-	return minetest.registered_nodes[minetest.get_node(pos).name].buildable_to
+	local def = minetest.registered_nodes[minetest.get_node(pos).name]
+	return def and def.buildable_to
 end
 
 
@@ -292,7 +293,7 @@ local get_door_layout = function(pos, facedir, player)
 					local newpos = rotate_pos_displaced(door_node.pos, origin, axis, direction)
 					local newnode = minetest.get_node(newpos)
 					local newdef = minetest.registered_nodes[newnode.name]
-					if not newdef.buildable_to then
+					if not (newdef and newdef.buildable_to) then
 						-- check if the destination node is free.
 						door.swings[direction] = false
 						break
