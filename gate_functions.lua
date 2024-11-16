@@ -291,9 +291,7 @@ local get_door_layout = function(pos, facedir, player)
 				if not vector.equals(door_node.pos, origin) then
 					-- There's no obstruction if the node is literally located along the rotation axis
 					local newpos = rotate_pos_displaced(door_node.pos, origin, axis, direction)
-					local newnode = minetest.get_node(newpos)
-					local newdef = minetest.registered_nodes[newnode.name]
-					if not (newdef and newdef.buildable_to) then
+					if get_buildable_to(newpos) then
 						-- check if the destination node is free.
 						door.swings[direction] = false
 						break
